@@ -1,0 +1,38 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step19_WhenEach"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 19 - Task.WhenEach">
+    <Page.DataContext>
+        <vm:Step19ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 19: Task.WhenEach (.NET 9+)"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">WHENEACH: Process tasks in the order they COMPLETE (not the order you started them).
+
+Task.WhenAll waits for ALL tasks, then gives you all results at once.
+Task.WhenAny gives you the FIRST completed task (but you have to loop manually).
+Task.WhenEach (new in .NET 9) returns an IAsyncEnumerable that yields tasks
+in completion order. Use "await foreach" to process them!
+
+This is much cleaner than the old "WhenAny in a loop" pattern, and it gives
+a better user experience: results appear on screen as soon as they are ready.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="? Process tasks in completion order"
+                    Command="{Binding WhenEachDemoCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Compare WhenAll vs WhenEach UX"
+                    Command="{Binding CompareWhenAllVsWhenEachCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="??? WhenEach with error handling"
+                    Command="{Binding WhenEachWithErrorsCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

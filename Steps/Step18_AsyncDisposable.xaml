@@ -1,0 +1,43 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step18_AsyncDisposable"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 18 - Async Disposable">
+    <Page.DataContext>
+        <vm:Step18ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 18: Async Disposal (IAsyncDisposable)"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">ASYNC DISPOSAL: Cleaning up resources that require async operations.
+
+Regular "using" calls Dispose() synchronously. But sometimes cleanup
+needs async work: flushing a network stream, closing a database connection
+gracefully, sending a "goodbye" message over a socket.
+
+IAsyncDisposable defines: ValueTask DisposeAsync()
+Use "await using" instead of "using" to call it automatically.
+
+RULE: If your class holds async resources, implement IAsyncDisposable.
+The "await using" ensures DisposeAsync is called even if exceptions occur.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Basic 'await using'"
+                    Command="{Binding BasicAwaitUsingCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Multiple async resources"
+                    Command="{Binding MultipleResourcesCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Without await using (resource leak risk)"
+                    Command="{Binding WithoutAwaitUsingCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Show implementation pattern"
+                    Command="{Binding ShowPatternCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="280"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

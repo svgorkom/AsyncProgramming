@@ -1,0 +1,43 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step14_Deadlocks"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 14 - Deadlocks">
+    <Page.DataContext>
+        <vm:Step14ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 14: Deadlocks &amp; .Result/.Wait() Anti-Patterns"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">DEADLOCKS: The #1 real-world mistake with async code.
+
+Calling .Result or .Wait() on the UI thread BLOCKS the thread. But the
+awaited continuation needs that same thread to resume (because of the
+SynchronizationContext). Both sides wait for each other = DEADLOCK!
+
+This is like standing in a narrow doorway waiting for someone to come
+through, while they are on the other side waiting for YOU to move.
+
+RULE: NEVER use .Result or .Wait() on the UI thread.
+ALWAYS use "await" instead. It releases the thread so the continuation can run.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="? The CORRECT way (await)"
+                    Command="{Binding CorrectWayCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? .Result on a background thread (safe but not ideal)"
+                    Command="{Binding ResultOnBackgroundThreadCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Explain the deadlock step-by-step"
+                    Command="{Binding ShowDeadlockExplanationCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? ConfigureAwait(false) as escape hatch"
+                    Command="{Binding ConfigureAwaitEscapeCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,40 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step16_SemaphoreSlim"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 16 - SemaphoreSlim">
+    <Page.DataContext>
+        <vm:Step16ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 16: SemaphoreSlim &amp; Async Throttling"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">THROTTLING: Controlling how many async operations run at the same time.
+
+SemaphoreSlim is like a bouncer at a club: the club has max capacity.
+When full, new arrivals wait outside. When someone leaves, the next enters.
+
+Use WaitAsync() for async-friendly locking (the "lock" keyword blocks threads).
+SemaphoreSlim(1, 1) acts as an async mutex: only one task at a time.
+SemaphoreSlim(N, N) allows up to N concurrent operations.
+
+Common use: Downloading 100 files but limiting to 3 simultaneous connections
+to avoid overwhelming the server or running out of sockets.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? No throttling (all tasks at once)"
+                    Command="{Binding NoThrottlingCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? With throttling (max 3 concurrent)"
+                    Command="{Binding WithThrottlingCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Async lock (SemaphoreSlim as mutex)"
+                    Command="{Binding AsyncLockCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

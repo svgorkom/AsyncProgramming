@@ -1,0 +1,50 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step24_Timeouts"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 24 - Timeouts">
+    <Page.DataContext>
+        <vm:Step24ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 24: Timeouts (CancelAfter &amp; Task.WaitAsync)"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">TIMEOUTS: Setting time limits on async operations.
+
+Two approaches:
+1. CancelAfter: Automatically cancels a CancellationToken after a duration.
+   The method cooperatively stops when it checks the token.
+   Best when the method accepts CancellationToken.
+
+2. Task.WaitAsync(timeout): Wraps any task with a timeout. If it takes too
+   long, throws TimeoutException. Does NOT cancel the underlying task!
+   Best when you don't control the method's internals.
+
+PRODUCTION PATTERN: Use both together for robustness.
+   CancelAfter asks the method to stop (cooperative).
+   WaitAsync is a safety net if the method ignores cancellation.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? CancelAfter (cooperative cancellation)"
+                    Command="{Binding CancelAfterDemoCommand}"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="? Task.WaitAsync (timeout without cancellation)"
+                    Command="{Binding WaitAsyncDemoCommand}"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Combined: CancelAfter + WaitAsync"
+                    Command="{Binding CombinedDemoCommand}"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="? Timeout success (finishes in time)"
+                    Command="{Binding SuccessfulTimeoutCommand}"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="280"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

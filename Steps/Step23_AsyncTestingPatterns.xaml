@@ -1,0 +1,50 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step23_AsyncTestingPatterns"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 23 - Async Testing">
+    <Page.DataContext>
+        <vm:Step23ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 23: Async Unit Testing Patterns"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">ASYNC TESTING: How to properly test async code in unit tests.
+
+All major test frameworks (xUnit, NUnit, MSTest) support async Task tests.
+Just make your test method "async Task" and use "await" inside.
+
+KEY PATTERNS:
+- Basic: [Fact] public async Task MyTest() { var x = await service.GetAsync(); }
+- Exceptions: await Assert.ThrowsAsync&lt;T&gt;(() =&gt; service.FailAsync());
+  (NOT Assert.Throws! That misses exceptions inside the Task!)
+- Cancellation: create a pre-cancelled token, verify OperationCanceledException.
+- Timeouts: task.WaitAsync(timeout) prevents tests from hanging forever.
+- Mocking: Task.FromResult, Task.CompletedTask, Task.FromException.
+
+This step simulates test runs in the UI. The patterns are directly
+transferable to real xUnit/NUnit/MSTest projects.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="? Basic async test pattern"
+                    Command="{Binding BasicAsyncTestCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Testing async exceptions"
+                    Command="{Binding ExceptionTestCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Testing cancellation"
+                    Command="{Binding CancellationTestCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Testing with timeouts"
+                    Command="{Binding TimeoutTestCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Mocking async dependencies"
+                    Command="{Binding MockingTestCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="260"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

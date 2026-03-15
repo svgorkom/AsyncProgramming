@@ -46,6 +46,18 @@
                     <ListBoxItem Content="10. ConfigureAwait &amp; Threads"/>
                     <ListBoxItem Content="11. Real HTTP Calls"/>
                     <ListBoxItem Content="12. Async Streams"/>
+                    <ListBoxItem Content="13. ValueTask &amp; ValueTask&lt;T&gt;"/>
+                    <ListBoxItem Content="14. Deadlocks &amp; .Result/.Wait()"/>
+                    <ListBoxItem Content="15. CPU-Bound vs I/O-Bound"/>
+                    <ListBoxItem Content="16. SemaphoreSlim &amp; Throttling"/>
+                    <ListBoxItem Content="17. Channel&lt;T&gt; Producer/Consumer"/>
+                    <ListBoxItem Content="18. Async Disposal (await using)"/>
+                    <ListBoxItem Content="19. Task.WhenEach (.NET 9+)"/>
+                    <ListBoxItem Content="20. Async LINQ Operations"/>
+                    <ListBoxItem Content="21. SynchronizationContext"/>
+                    <ListBoxItem Content="22. Parallel.ForEachAsync"/>
+                    <ListBoxItem Content="23. Async Testing Patterns"/>
+                    <ListBoxItem Content="24. Timeouts (CancelAfter)"/>
                 </ListBox>
             </DockPanel>
         </Border>

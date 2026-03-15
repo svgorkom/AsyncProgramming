@@ -1,0 +1,46 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step21_SynchronizationContext"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 21 - SynchronizationContext">
+    <Page.DataContext>
+        <vm:Step21ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 21: SynchronizationContext Deep Dive"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">SYNCHRONIZATIONCONTEXT: The invisible mechanism behind await's thread behavior.
+
+When you write "await" in WPF, the code after await magically runs on the
+UI thread. HOW? The SynchronizationContext captures the current thread
+before yielding, then posts the continuation back to that thread.
+
+Different frameworks have different contexts:
+- WPF/WinForms: posts to the UI thread (DispatcherSynchronizationContext).
+- ASP.NET Core: NO context (uses thread pool, so no deadlock risk!).
+- Console apps: NO context (uses thread pool).
+
+Understanding this explains: why await resumes on the UI thread, why .Result
+deadlocks, why ConfigureAwait(false) prevents deadlocks, and why ASP.NET Core
+doesn't have the same problems as WPF.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Show current SynchronizationContext"
+                    Command="{Binding ShowContextCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Context capture vs ConfigureAwait(false)"
+                    Command="{Binding ContextCaptureCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? How context causes deadlocks (explanation)"
+                    Command="{Binding ExplainDeadlockCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Manual SynchronizationContext.Post"
+                    Command="{Binding ManualPostCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="280"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

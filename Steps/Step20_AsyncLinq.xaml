@@ -1,0 +1,46 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step20_AsyncLinq"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 20 - Async LINQ">
+    <Page.DataContext>
+        <vm:Step20ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 20: Async LINQ Operations"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">ASYNC LINQ: Filtering, transforming, and collecting async streams.
+
+Standard LINQ (Where, Select, Take) works on IEnumerable&lt;T&gt;, not
+IAsyncEnumerable&lt;T&gt;. You can write async LINQ manually using
+"await foreach" + "yield return", or use the System.Linq.Async NuGet package.
+
+This step shows the manual approach. It teaches the underlying pattern.
+Each operation processes items lazily, one at a time, as they arrive.
+
+KEY OPERATIONS:
+- WhereAsync: filter items from an async stream.
+- SelectAsync / SelectAwaitAsync: transform items (sync or async transform).
+- TakeAsync: yield at most N items, then stop.
+- ToListAsync: collect all items into a List (breaks lazy evaluation).</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Filter: async Where (even numbers only)"
+                    Command="{Binding FilterDemoCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Transform: async Select (product lookup)"
+                    Command="{Binding TransformDemoCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Pipeline: Where ? Select ? Take"
+                    Command="{Binding PipelineDemoCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Collect: ToListAsync"
+                    Command="{Binding CollectDemoCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="280"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

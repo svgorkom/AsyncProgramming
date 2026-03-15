@@ -1,0 +1,42 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step13_ValueTask"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 13 - ValueTask">
+    <Page.DataContext>
+        <vm:Step13ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 13: ValueTask and ValueTask&lt;T&gt;"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">VALUETASK: A lightweight alternative to Task that avoids heap allocations.
+
+Task&lt;T&gt; always creates an object on the heap, even if the result is
+already available (like returning a cached value). For hot paths called
+millions of times, this creates garbage collection pressure.
+
+ValueTask&lt;T&gt; is a struct. When the result is already available, it
+wraps the value directly with no heap allocation at all! When async work
+IS needed, it falls back to wrapping a real Task internally.
+
+WHEN TO USE: Methods that frequently return synchronously (caches, pools).
+WHEN NOT TO USE: When you need Task.WhenAll, need to await multiple times,
+or when the method almost always does real async work.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="Compare Task&lt;T&gt; vs ValueTask&lt;T&gt; allocations"
+                    Command="{Binding CompareAllocationsCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="Cache miss ? falls back to async"
+                    Command="{Binding CacheMissCommand}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="Show ValueTask rules"
+                    Command="{Binding ShowRulesCommand}"/>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

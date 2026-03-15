@@ -1,0 +1,51 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step22_ParallelForEachAsync"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
+      Title="Step 22 - Parallel.ForEachAsync">
+    <Page.DataContext>
+        <vm:Step22ViewModel/>
+    </Page.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 22: Parallel.ForEachAsync"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">PARALLEL.FOREACHASYNC: The modern async-friendly parallel loop (.NET 6+).
+
+Processes a collection in parallel with built-in concurrency control.
+Unlike Task.WhenAll (all at once) or SemaphoreSlim (manual throttling),
+Parallel.ForEachAsync has a clean API with MaxDegreeOfParallelism built in.
+
+Unlike the old Parallel.ForEach (synchronous, blocks threads), this version
+is fully async. It uses await internally and returns a Task you can await.
+
+WHEN TO USE:
+- Processing many items with async I/O (downloading files, API calls).
+- You want controlled parallelism without manual SemaphoreSlim wiring.
+- You need cancellation support.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Basic: process 10 items (max 3 concurrent)"
+                    Command="{Binding BasicDemoCommand}"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="?? Compare: sequential vs parallel"
+                    Command="{Binding CompareDemoCommand}"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Style="{StaticResource ActionButton}"
+                        Content="?? With cancellation (20 items)"
+                        Command="{Binding WithCancellationCommand}"
+                        IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
+                <Button Style="{StaticResource ActionButton}" Margin="10,5,0,5"
+                        Content="Cancel" Background="#E63946"
+                        Command="{Binding WithCancellationCancelCommand}"
+                        IsEnabled="{Binding IsRunning}"/>
+            </StackPanel>
+
+            <TextBox Style="{StaticResource OutputStyle}" Height="280"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

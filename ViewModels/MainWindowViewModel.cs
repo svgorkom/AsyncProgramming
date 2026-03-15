@@ -34,6 +34,18 @@ public partial class MainWindowViewModel : ObservableObject
             new Steps.Step10_ConfigureAwait(),
             new Steps.Step11_RealHttpCalls(),
             new Steps.Step12_AsyncStreams(),
+            new Steps.Step13_ValueTask(),
+            new Steps.Step14_Deadlocks(),
+            new Steps.Step15_CpuBoundVsIoBound(),
+            new Steps.Step16_SemaphoreSlim(),
+            new Steps.Step17_Channels(),
+            new Steps.Step18_AsyncDisposable(),
+            new Steps.Step19_WhenEach(),
+            new Steps.Step20_AsyncLinq(),
+            new Steps.Step21_SynchronizationContext(),
+            new Steps.Step22_ParallelForEachAsync(),
+            new Steps.Step23_AsyncTestingPatterns(),
+            new Steps.Step24_Timeouts(),
         ];
 
         // Start on Step 1
