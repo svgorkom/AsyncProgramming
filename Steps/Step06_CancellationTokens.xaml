@@ -1,0 +1,38 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step06_CancellationTokens"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 6 - Cancellation Tokens">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 6: Cancelling Async Operations"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">
+                CANCELLATION: Allowing the user to stop an operation that is in progress.
+
+                Imagine downloading a large file and wanting to click "Cancel." Without
+                cancellation support, you would have to wait until it finishes (or kill the app).
+
+                .NET provides a cancellation system with two parts:
+                - CancellationTokenSource: The "cancel button." You call .Cancel() on it.
+                - CancellationToken: The "signal" you pass into async methods. The method
+                  checks this token periodically and stops if cancellation was requested.
+
+                Think of it like a walkie-talkie: the CancellationTokenSource sends the
+                "stop!" message, and the CancellationToken inside the method receives it.
+            </TextBlock>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Style="{StaticResource ActionButton}"
+                        Content="Start Long Operation"
+                        Click="Start_Click" x:Name="StartButton"/>
+                <Button Style="{StaticResource ActionButton}" Margin="10,5,0,5"
+                        Content="Cancel"
+                        Click="Cancel_Click" x:Name="CancelButton" IsEnabled="False"
+                        Background="#E63946"/>
+            </StackPanel>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

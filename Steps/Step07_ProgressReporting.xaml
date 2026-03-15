@@ -1,0 +1,38 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step07_ProgressReporting"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 7 - Progress Reporting">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 7: Reporting Progress from Async Operations"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">PROGRESS: Showing the user how far along an operation is.
+
+When a long operation runs in the background, users want to see progress
+(like a progress bar or "Step 3 of 10"). .NET provides IProgress&lt;T&gt; and
+Progress&lt;T&gt; to safely report progress from async methods back to the UI.
+
+- IProgress&lt;T&gt;: An interface your async method accepts as a parameter.
+  Call progress.Report(value) to send an update.
+- Progress&lt;T&gt;: A class you create in the UI layer that handles the updates.
+  It automatically marshals callbacks to the UI thread (so you can safely
+  update controls like progress bars).
+
+T can be any type: int (percentage), string (message), or a custom class.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="Start operation with progress bar"
+                    Click="Start_Click" x:Name="StartButton"/>
+
+            <ProgressBar x:Name="ProgressBar" Height="25" Margin="0,10" 
+                         Minimum="0" Maximum="100" Value="0"/>
+            
+            <TextBlock x:Name="ProgressText" FontSize="14" 
+                       Foreground="#555" Margin="0,0,0,10"
+                       Text="Ready"/>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="220"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

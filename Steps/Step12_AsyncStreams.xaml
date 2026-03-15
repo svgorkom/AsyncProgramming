@@ -1,0 +1,38 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step12_AsyncStreams"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 12 - Async Streams">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 12: Async Streams (IAsyncEnumerable)"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">ASYNC STREAMS: Processing items one at a time as they become available.
+
+Normal async: you call a method, wait for ALL the data, then process it.
+Async streams: data arrives piece by piece, and you process EACH piece as it comes.
+
+Think of it like:
+- Task&lt;List&lt;Item&gt;&gt; = "Here are ALL the items" (you wait for everything)
+- IAsyncEnumerable&lt;Item&gt; = "Here is one item... here is another... here is another..."
+  (you process each one immediately)
+
+Uses "await foreach" instead of regular "foreach".
+Uses "yield return" inside the method (just like IEnumerable, but async).
+
+Real-world examples: reading database rows one at a time, processing a live
+data feed, reading a large file line by line, streaming API results.</TextBlock>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Style="{StaticResource ActionButton}"
+                        Content="Stream sensor data (IAsyncEnumerable)"
+                        Click="StreamData_Click" x:Name="StartButton"/>
+                <Button Style="{StaticResource ActionButton}" Margin="10,5,0,5"
+                        Content="Stop" Background="#E63946"
+                        Click="Stop_Click" x:Name="StopButton" IsEnabled="False"/>
+            </StackPanel>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

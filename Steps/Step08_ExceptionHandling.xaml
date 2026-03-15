@@ -1,0 +1,37 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step08_ExceptionHandling"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 8 - Exception Handling">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 8: Exception Handling in Async Code"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">EXCEPTIONS: Handling errors in async methods.
+
+Good news: try/catch works with async/await just like normal code!
+When an awaited task throws an exception, it "bubbles up" to the catch block.
+
+But there are some important things to know:
+- A single await: The exception comes through directly, just catch it normally.
+- Task.WhenAll: If MULTIPLE tasks fail, only the FIRST exception is thrown by
+  default. You need to inspect the task objects to see all exceptions.
+- async void methods: Exceptions CANNOT be caught by the caller! They crash
+  the app. (This is why we avoid async void except for event handlers.)
+- AggregateException: When using Task.WhenAll, the Task.Exception property
+  contains an AggregateException that holds ALL the individual exceptions.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="1. Single task exception (simple try/catch)"
+                    Click="SingleException_Click"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="2. Multiple task exceptions (Task.WhenAll)"
+                    Click="MultipleExceptions_Click"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="3. Nested async exception (call chain)"
+                    Click="NestedException_Click"/>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="280"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

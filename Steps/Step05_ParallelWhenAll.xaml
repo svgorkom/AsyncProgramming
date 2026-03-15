@@ -1,0 +1,31 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step05_ParallelWhenAll"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 5 - Parallel with Task.WhenAll">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 5: Running Tasks in Parallel with Task.WhenAll"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">
+                PARALLEL: Running INDEPENDENT tasks AT THE SAME TIME.
+
+                If tasks do not depend on each other, why wait for one to finish before
+                starting the next? Task.WhenAll starts them all at once and waits for
+                ALL of them to complete.
+
+                Total time = the LONGEST single task (not the sum).
+                If task A=1.5s, B=2s, C=1s, total is about 2 seconds (not 4.5 seconds!).
+
+                WARNING: Only use parallel when the tasks are truly INDEPENDENT.
+                If task B needs the result of task A, you must run them sequentially.
+            </TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="Run 3 tasks in PARALLEL (much faster!)"
+                    Click="RunParallel_Click"/>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

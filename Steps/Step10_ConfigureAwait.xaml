@@ -1,0 +1,35 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step10_ConfigureAwait"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 10 - ConfigureAwait">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 10: ConfigureAwait, Task.Run, and Thread Awareness"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">THREADS: Understanding where your code runs after await.
+
+By default, "await" in a WPF app captures the current thread (UI thread) and
+returns to it after the awaited task completes. This is why you can update UI
+controls after await without any issues.
+
+But sometimes you want to do CPU-heavy work WITHOUT occupying the UI thread.
+That is where Task.Run comes in - it runs code on a background thread.
+
+Key rules:
+- After "await", code resumes on the UI thread (by default in WPF).
+- Inside Task.Run, code runs on a background thread (cannot touch UI!).
+- ConfigureAwait(false): after await, do NOT return to the UI thread.
+  Use this in library code that does not need the UI thread.</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="Show thread IDs (UI thread vs background)"
+                    Click="ShowThreads_Click"/>
+            <Button Style="{StaticResource ActionButton}"
+                    Content="CPU-heavy work with Task.Run"
+                    Click="TaskRun_Click"/>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="280"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,54 @@
+<Window x:Class="AsynAwaitExamples.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Async/Await Step-by-Step Tutorial" 
+        Height="750" Width="1050"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT PANEL: Navigation list of steps -->
+        <Border Background="#2D6A4F" Padding="10">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" 
+                           Text="?? Async/Await Tutorial" 
+                           FontSize="16" FontWeight="Bold" 
+                           Foreground="White" Margin="5,10,5,15"/>
+                <ListBox x:Name="StepList" 
+                         Background="Transparent" 
+                         BorderThickness="0"
+                         Foreground="White"
+                         FontSize="12"
+                         SelectionChanged="StepList_SelectionChanged">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="8,6"/>
+                            <Setter Property="Margin" Value="0,1"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBoxItem Content="1. The Freezing UI Problem"/>
+                    <ListBoxItem Content="2. Your First async/await"/>
+                    <ListBoxItem Content="3. Returning Values (Task&lt;T&gt;)"/>
+                    <ListBoxItem Content="4. Sequential Async Calls"/>
+                    <ListBoxItem Content="5. Parallel with Task.WhenAll"/>
+                    <ListBoxItem Content="6. Cancellation Tokens"/>
+                    <ListBoxItem Content="7. Progress Reporting"/>
+                    <ListBoxItem Content="8. Exception Handling"/>
+                    <ListBoxItem Content="9. Task.WhenAny"/>
+                    <ListBoxItem Content="10. ConfigureAwait &amp; Threads"/>
+                    <ListBoxItem Content="11. Real HTTP Calls"/>
+                    <ListBoxItem Content="12. Async Streams"/>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- RIGHT PANEL: Content area where each step is displayed -->
+        <Border Grid.Column="1" Padding="20" Background="#F8F9FA">
+            <Frame x:Name="ContentFrame" NavigationUIVisibility="Hidden"/>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,30 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step03_ReturningValues"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 3 - Returning Values">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 3: Returning Values from Async Methods"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">RETURNING DATA: Async methods can return values using Task&lt;T&gt;.
+
+A normal method returns "int" or "string" directly.
+An async method wraps the return value in a Task: "Task&lt;int&gt;" or "Task&lt;string&gt;".
+
+When you "await" a Task&lt;string&gt;, you get the string out of it.
+Think of Task&lt;string&gt; like a gift box. "await" unwraps it to get the string inside.
+
+Example:
+   Task&lt;string&gt;  -- await --  string
+   Task&lt;int&gt;     -- await --  int
+   Task          -- await --  (nothing, just waits for completion)</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}"
+                    Content="Fetch simulated data (returns a value)"
+                    Click="FetchData_Click"/>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

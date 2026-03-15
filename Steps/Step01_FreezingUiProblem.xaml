@@ -1,0 +1,35 @@
+<Page x:Class="AsynAwaitExamples.Steps.Step01_FreezingUiProblem"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Step 1 - The Freezing UI Problem">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <TextBlock Style="{StaticResource HeaderStyle}" 
+                       Text="Step 1: The Freezing UI Problem"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" xml:space="preserve">THE PROBLEM: When you do long work on the UI thread, the whole window FREEZES.
+
+In a WPF app, there is ONE special thread called the "UI thread" (or "main thread").
+This thread is responsible for drawing buttons, handling clicks, updating text, etc.
+
+If you run a slow operation (like downloading a file, reading a database, or even
+just Thread.Sleep) directly on this UI thread, the window cannot redraw or respond
+to clicks until that slow operation finishes. The app appears "frozen" or "hung".
+
+Click the button below to simulate a 3-second blocking operation.
+Try to move the window or click anything while it is running - you cannot!</TextBlock>
+
+            <Button Style="{StaticResource ActionButton}" 
+                    Content="Run BLOCKING operation (will freeze UI for 3 seconds)"
+                    Click="RunBlocking_Click"/>
+
+            <TextBlock Style="{StaticResource ExplanationStyle}" Margin="0,15,0,5"
+                       Text="The counter below updates every second to prove the UI is alive. Watch it STOP when you click the blocking button:"/>
+
+            <TextBlock x:Name="CounterText" FontSize="24" FontWeight="Bold" 
+                       Foreground="#E63946" Margin="0,5,0,10" Text="Counter: 0"/>
+
+            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="200"/>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
