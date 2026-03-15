@@ -1,14 +1,18 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step04_SequentialCalls"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 4 - Sequential Calls">
+    <Page.DataContext>
+        <vm:Step04ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
                        Text="Step 4: Sequential Async Calls"/>
 
             <TextBlock Style="{StaticResource ExplanationStyle}">
-                ?? SEQUENTIAL: Running async operations ONE AFTER ANOTHER.
+                ? SEQUENTIAL: Running async operations ONE AFTER ANOTHER.
                 
                 When you "await" multiple operations in order, each one waits for the previous
                 one to finish before starting. This is called "sequential" execution.
@@ -21,10 +25,11 @@
             </TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Run 3 tasks SEQUENTIALLY (one after another)"
-                    Click="RunSequential_Click"/>
+                    Content="? Run 3 tasks SEQUENTIALLY (one after another)"
+                    Command="{Binding RunSequentialCommand}"/>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

@@ -1,7 +1,11 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step07_ProgressReporting"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 7 - Progress Reporting">
+    <Page.DataContext>
+        <vm:Step07ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
@@ -23,16 +27,19 @@ T can be any type: int (percentage), string (message), or a custom class.</TextB
 
             <Button Style="{StaticResource ActionButton}"
                     Content="Start operation with progress bar"
-                    Click="Start_Click" x:Name="StartButton"/>
+                    Command="{Binding StartProcessingCommand}"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
 
-            <ProgressBar x:Name="ProgressBar" Height="25" Margin="0,10" 
-                         Minimum="0" Maximum="100" Value="0"/>
+            <ProgressBar Height="25" Margin="0,10" 
+                         Minimum="0" Maximum="100" 
+                         Value="{Binding ProgressPercentage, Mode=OneWay}"/>
             
-            <TextBlock x:Name="ProgressText" FontSize="14" 
+            <TextBlock FontSize="14" 
                        Foreground="#555" Margin="0,0,0,10"
-                       Text="Ready"/>
+                       Text="{Binding ProgressMessage}"/>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="220"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="220"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

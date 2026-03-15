@@ -1,7 +1,11 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step06_CancellationTokens"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 6 - Cancellation Tokens">
+    <Page.DataContext>
+        <vm:Step06ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
@@ -25,14 +29,17 @@
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource ActionButton}"
                         Content="Start Long Operation"
-                        Click="Start_Click" x:Name="StartButton"/>
+                        Command="{Binding StartLongOperationCommand}"
+                        IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
                 <Button Style="{StaticResource ActionButton}" Margin="10,5,0,5"
                         Content="Cancel"
-                        Click="Cancel_Click" x:Name="CancelButton" IsEnabled="False"
+                        Command="{Binding StartLongOperationCancelCommand}"
+                        IsEnabled="{Binding IsRunning}"
                         Background="#E63946"/>
             </StackPanel>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

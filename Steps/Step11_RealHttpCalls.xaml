@@ -1,7 +1,11 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step11_RealHttpCalls"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 11 - Real HTTP Calls">
+    <Page.DataContext>
+        <vm:Step11ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
@@ -24,12 +28,13 @@ Note: This step requires an internet connection.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
                     Content="Fetch data from a public API"
-                    Click="FetchApi_Click"/>
+                    Command="{Binding FetchApiCommand}"/>
             <Button Style="{StaticResource ActionButton}"
                     Content="Fetch 3 APIs in parallel"
-                    Click="FetchParallel_Click"/>
+                    Command="{Binding FetchParallelCommand}"/>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

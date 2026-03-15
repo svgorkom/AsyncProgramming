@@ -1,7 +1,11 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step02_FirstAsyncAwait"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 2 - Your First async/await">
+    <Page.DataContext>
+        <vm:Step02ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
@@ -21,15 +25,17 @@ Click the button and try to move the window - it stays responsive!</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
                     Content="Run ASYNC operation (UI stays responsive!)"
-                    Click="RunAsync_Click"/>
+                    Command="{Binding RunAsyncCommand}"/>
 
             <TextBlock Style="{StaticResource ExplanationStyle}" Margin="0,15,0,5"
                        Text="Watch the counter - it keeps running during the async operation:"/>
 
-            <TextBlock x:Name="CounterText" FontSize="24" FontWeight="Bold" 
-                       Foreground="#2D6A4F" Margin="0,5,0,10" Text="Counter: 0"/>
+            <TextBlock FontSize="24" FontWeight="Bold" 
+                       Foreground="#2D6A4F" Margin="0,5,0,10" 
+                       Text="{Binding Counter, StringFormat='Counter: {0}'}"/>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="200"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="200"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

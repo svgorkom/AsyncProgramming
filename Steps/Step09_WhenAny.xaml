@@ -1,7 +1,11 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step09_WhenAny"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 9 - Task.WhenAny">
+    <Page.DataContext>
+        <vm:Step09ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
@@ -22,12 +26,13 @@ which task "won the race."</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
                     Content="Race: Which server responds first?"
-                    Click="Race_Click"/>
+                    Command="{Binding RaceCommand}"/>
             <Button Style="{StaticResource ActionButton}"
                     Content="Timeout pattern: Operation with 2-second timeout"
-                    Click="Timeout_Click"/>
+                    Command="{Binding TimeoutCommand}"/>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="280"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="280"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

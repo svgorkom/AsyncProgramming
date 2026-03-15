@@ -1,7 +1,11 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step12_AsyncStreams"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 12 - Async Streams">
+    <Page.DataContext>
+        <vm:Step12ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
@@ -26,13 +30,16 @@ data feed, reading a large file line by line, streaming API results.</TextBlock>
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource ActionButton}"
                         Content="Stream sensor data (IAsyncEnumerable)"
-                        Click="StreamData_Click" x:Name="StartButton"/>
+                        Command="{Binding StreamDataCommand}"
+                        IsEnabled="{Binding IsStreaming, Converter={StaticResource InvertBoolConverter}}"/>
                 <Button Style="{StaticResource ActionButton}" Margin="10,5,0,5"
                         Content="Stop" Background="#E63946"
-                        Click="Stop_Click" x:Name="StopButton" IsEnabled="False"/>
+                        Command="{Binding StreamDataCancelCommand}"
+                        IsEnabled="{Binding IsStreaming}"/>
             </StackPanel>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="300"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="300"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>

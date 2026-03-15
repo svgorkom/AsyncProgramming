@@ -1,7 +1,11 @@
 <Page x:Class="AsynAwaitExamples.Steps.Step08_ExceptionHandling"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:vm="clr-namespace:AsynAwaitExamples.ViewModels"
       Title="Step 8 - Exception Handling">
+    <Page.DataContext>
+        <vm:Step08ViewModel/>
+    </Page.DataContext>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="10">
             <TextBlock Style="{StaticResource HeaderStyle}" 
@@ -23,15 +27,16 @@ But there are some important things to know:
 
             <Button Style="{StaticResource ActionButton}"
                     Content="1. Single task exception (simple try/catch)"
-                    Click="SingleException_Click"/>
+                    Command="{Binding SingleExceptionCommand}"/>
             <Button Style="{StaticResource ActionButton}"
                     Content="2. Multiple task exceptions (Task.WhenAll)"
-                    Click="MultipleExceptions_Click"/>
+                    Command="{Binding MultipleExceptionsCommand}"/>
             <Button Style="{StaticResource ActionButton}"
                     Content="3. Nested async exception (call chain)"
-                    Click="NestedException_Click"/>
+                    Command="{Binding NestedExceptionCommand}"/>
 
-            <TextBox x:Name="Output" Style="{StaticResource OutputStyle}" Height="280"/>
+            <TextBox Style="{StaticResource OutputStyle}" Height="280"
+                     Text="{Binding OutputText, Mode=OneWay}"/>
         </StackPanel>
     </ScrollViewer>
 </Page>
