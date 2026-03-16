@@ -24,13 +24,13 @@ Common use: Downloading 100 files but limiting to 3 simultaneous connections
 to avoid overwhelming the server or running out of sockets.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? No throttling (all tasks at once)"
+                    Content="[1] No throttling (all tasks at once)"
                     Command="{Binding NoThrottlingCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? With throttling (max 3 concurrent)"
+                    Content="[2] With throttling (max 3 concurrent)"
                     Command="{Binding WithThrottlingCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Async lock (SemaphoreSlim as mutex)"
+                    Content="[3] Async lock (SemaphoreSlim as mutex)"
                     Command="{Binding AsyncLockCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="300"

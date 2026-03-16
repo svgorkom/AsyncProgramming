@@ -18,7 +18,7 @@
         <Border Background="#2D6A4F" Padding="10">
             <DockPanel>
                 <TextBlock DockPanel.Dock="Top" 
-                           Text="?? Async/Await Tutorial" 
+                           Text="Async/Await Tutorial" 
                            FontSize="16" FontWeight="Bold" 
                            Foreground="White" Margin="5,10,5,15"/>
                 <ListBox x:Name="StepList" 

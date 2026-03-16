@@ -5,31 +5,31 @@ using CommunityToolkit.Mvvm.Input;
 namespace AsynAwaitExamples.ViewModels;
 
 // ============================================================================
-// STEP 17 VIEWMODEL: Channel<T> — ASYNC PRODUCER/CONSUMER PATTERN
+// STEP 17 VIEWMODEL: Channel<T> -- ASYNC PRODUCER/CONSUMER PATTERN
 // ============================================================================
 //
 // KEY CONCEPTS:
 // -------------
-// 1. Channel<T> — A modern, thread-safe, async-friendly message queue.
+// 1. Channel<T> -- A modern, thread-safe, async-friendly message queue.
 //    - A PRODUCER writes items into the channel.
 //    - A CONSUMER reads items from the channel.
 //    - They can run concurrently on different threads/tasks.
 //
 // 2. BOUNDED vs UNBOUNDED channels:
-//    - Channel.CreateUnbounded<T>() — unlimited buffer. Producer never waits.
-//    - Channel.CreateBounded<T>(capacity) — limited buffer. Producer waits
+//    - Channel.CreateUnbounded<T>() -- unlimited buffer. Producer never waits.
+//    - Channel.CreateBounded<T>(capacity) -- limited buffer. Producer waits
 //      (backpressure) when the channel is full. This prevents memory issues.
 //
-// 3. ChannelWriter<T> — The producer's end. Write items with WriteAsync().
+// 3. ChannelWriter<T> -- The producer's end. Write items with WriteAsync().
 //    - Call Complete() when done producing. This signals "no more items."
 //
-// 4. ChannelReader<T> — The consumer's end. Read with ReadAllAsync().
-//    - ReadAllAsync() returns IAsyncEnumerable — works with await foreach!
+// 4. ChannelReader<T> -- The consumer's end. Read with ReadAllAsync().
+//    - ReadAllAsync() returns IAsyncEnumerable -- works with await foreach!
 //    - Automatically completes when the writer calls Complete().
 //
 // 5. WHY NOT BlockingCollection<T>?
 //    - BlockingCollection uses threads (blocks while waiting).
-//    - Channel<T> is async-native (awaits while waiting — no thread wasted).
+//    - Channel<T> is async-native (awaits while waiting -- no thread wasted).
 //
 // ANALOGY:
 // --------
@@ -44,7 +44,7 @@ public partial class Step17ViewModel : StepViewModelBase
     private bool _isRunning;
 
     // ========================================================================
-    // DEMO 1: Unbounded channel — producer and consumer running in parallel.
+    // DEMO 1: Unbounded channel -- producer and consumer running in parallel.
     // ========================================================================
     [RelayCommand]
     private async Task UnboundedChannel()
@@ -52,7 +52,7 @@ public partial class Step17ViewModel : StepViewModelBase
         IsRunning = true;
         Log("--- Unbounded Channel: Producer/Consumer ---\n");
 
-        var channel = Channel.CreateUnbounded<string>();
+        Channel<string> channel = Channel.CreateUnbounded<string>();
 
         // Start producer and consumer as parallel tasks.
         Task producer = ProduceItemsAsync(channel.Writer, 6, "Unbounded");
@@ -61,33 +61,33 @@ public partial class Step17ViewModel : StepViewModelBase
         // Wait for both to finish.
         await Task.WhenAll(producer, consumer);
 
-        Log("   ?? Both producer and consumer finished!\n");
+        Log("   [DONE] Both producer and consumer finished!\n");
         IsRunning = false;
     }
 
     // ========================================================================
-    // DEMO 2: Bounded channel — backpressure when full.
+    // DEMO 2: Bounded channel -- backpressure when full.
     // ========================================================================
     [RelayCommand]
     private async Task BoundedChannel()
     {
         IsRunning = true;
         Log("--- Bounded Channel (capacity=3): Backpressure Demo ---\n");
-        Log("   ?? Channel can hold max 3 items. Producer waits when full.\n");
+        Log("   [i] Channel can hold max 3 items. Producer waits when full.\n");
 
         // Channel can hold at most 3 items. Producer must wait when full.
-        var channel = Channel.CreateBounded<string>(new BoundedChannelOptions(3)
+        Channel<string> channel = Channel.CreateBounded<string>(new BoundedChannelOptions(3)
         {
             FullMode = BoundedChannelFullMode.Wait
         });
 
-        // Producer is faster than consumer — it will hit the capacity limit.
+        // Producer is faster than consumer -- it will hit the capacity limit.
         Task producer = ProduceItemsFastAsync(channel.Writer, 8);
         Task consumer = ConsumeItemsSlowAsync(channel.Reader);
 
         await Task.WhenAll(producer, consumer);
 
-        Log("   ?? Done! Notice the producer had to WAIT when the channel was full.\n");
+        Log("   [DONE] Done! Notice the producer had to WAIT when the channel was full.\n");
         IsRunning = false;
     }
 
@@ -99,9 +99,9 @@ public partial class Step17ViewModel : StepViewModelBase
     {
         IsRunning = true;
         Log("--- Multiple Consumers (Fan-Out) ---\n");
-        Log("   ?? 1 producer, 3 consumers competing for items.\n");
+        Log("   [i] 1 producer, 3 consumers competing for items.\n");
 
-        var channel = Channel.CreateUnbounded<string>();
+        Channel<string> channel = Channel.CreateUnbounded<string>();
 
         Task producer = ProduceItemsAsync(channel.Writer, 9, "FanOut");
 
@@ -113,7 +113,7 @@ public partial class Step17ViewModel : StepViewModelBase
 
         await Task.WhenAll(producer, consumer1, consumer2, consumer3);
 
-        Log("\n   ?? All workers finished! Items were distributed among consumers.\n");
+        Log("\n   [DONE] All workers finished! Items were distributed among consumers.\n");
         IsRunning = false;
     }
 
@@ -125,48 +125,48 @@ public partial class Step17ViewModel : StepViewModelBase
         {
             string item = $"{label}-Item-{i}";
             await writer.WriteAsync(item);
-            Log($"   ?? Produced: {item}");
+            Log($"   [PROD] Produced: {item}");
             await Task.Delay(300); // Simulate production time.
         }
         writer.Complete(); // Signal: no more items.
-        Log("   ?? Producer finished (channel marked complete).");
+        Log("   [PROD] Producer finished (channel marked complete).");
     }
 
     private async Task ProduceItemsFastAsync(ChannelWriter<string> writer, int count)
     {
         for (int i = 1; i <= count; i++)
         {
-            Log($"   ?? Trying to write Item-{i}...");
+            Log($"   [PROD] Trying to write Item-{i}...");
             await writer.WriteAsync($"Item-{i}"); // Will WAIT if channel is full!
-            Log($"   ?? Written: Item-{i}");
+            Log($"   [OK] Written: Item-{i}");
             await Task.Delay(100); // Fast producer.
         }
         writer.Complete();
-        Log("   ?? Producer finished.");
+        Log("   [PROD] Producer finished.");
     }
 
     // --- Consumer methods ---
 
     private async Task ConsumeItemsAsync(ChannelReader<string> reader, string label)
     {
-        // ReadAllAsync returns IAsyncEnumerable — works with await foreach!
+        // ReadAllAsync returns IAsyncEnumerable -- works with await foreach!
         await foreach (string item in reader.ReadAllAsync())
         {
-            Log($"   ?? Consumed: {item}");
+            Log($"   [CONS] Consumed: {item}");
             await Task.Delay(200); // Simulate processing time.
         }
-        Log("   ?? Consumer finished (channel was completed).");
+        Log("   [CONS] Consumer finished (channel was completed).");
     }
 
     private async Task ConsumeItemsSlowAsync(ChannelReader<string> reader)
     {
         await foreach (string item in reader.ReadAllAsync())
         {
-            Log($"   ?? Consuming: {item} (slow — 600ms)...");
-            await Task.Delay(600); // Slow consumer — causes backpressure.
-            Log($"   ?? Done: {item}");
+            Log($"   [CONS] Consuming: {item} (slow -- 600ms)...");
+            await Task.Delay(600); // Slow consumer -- causes backpressure.
+            Log($"   [OK] Done: {item}");
         }
-        Log("   ?? Consumer finished.");
+        Log("   [CONS] Consumer finished.");
     }
 
     private async Task ConsumeAsWorkerAsync(ChannelReader<string> reader, string workerName)
@@ -176,11 +176,11 @@ public partial class Step17ViewModel : StepViewModelBase
         {
             while (reader.TryRead(out string? item))
             {
-                Log($"   ?? {workerName} processing: {item}");
+                Log($"   [>] {workerName} processing: {item}");
                 await Task.Delay(Random.Shared.Next(200, 500));
-                Log($"   ? {workerName} done: {item}");
+                Log($"   [OK] {workerName} done: {item}");
             }
         }
-        Log($"   ?? {workerName} finished.");
+        Log($"   [DONE] {workerName} finished.");
     }
 }

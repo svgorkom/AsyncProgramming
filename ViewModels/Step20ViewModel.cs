@@ -20,7 +20,7 @@ namespace AsynAwaitExamples.ViewModels;
 //    - Where:   async IAsyncEnumerable<T> WhereAsync(source, predicate)
 //    - Select:  async IAsyncEnumerable<U> SelectAsync(source, transform)
 //    - Take:    async IAsyncEnumerable<T> TakeAsync(source, count)
-//    - These compose just like regular LINQ — chain them together!
+//    - These compose just like regular LINQ -- chain them together!
 //
 // 3. ToListAsync:
 //    - Collects all items from an IAsyncEnumerable into a List<T>.
@@ -46,15 +46,15 @@ public partial class Step20ViewModel : StepViewModelBase
     {
         Log("--- Async Where: Filtering an Async Stream ---\n");
 
-        Log("   ?? Source stream: numbers 1 to 10 (arriving one at a time)");
-        Log("   ?? Filter: keep only even numbers\n");
+        Log("   [>] Source stream: numbers 1 to 10 (arriving one at a time)");
+        Log("   [>] Filter: keep only even numbers\n");
 
         await foreach (int number in WhereAsync(GenerateNumbersAsync(1, 10), n => n % 2 == 0))
         {
-            Log($"   ? Passed filter: {number}");
+            Log($"   [OK] Passed filter: {number}");
         }
 
-        Log("\n   ?? Items were filtered as they arrived — no buffering!\n");
+        Log("\n   [i] Items were filtered as they arrived -- no buffering!\n");
     }
 
     // ========================================================================
@@ -65,8 +65,8 @@ public partial class Step20ViewModel : StepViewModelBase
     {
         Log("--- Async Select: Transforming an Async Stream ---\n");
 
-        Log("   ?? Source: product IDs 1–5");
-        Log("   ?? Transform: look up product details (async operation)\n");
+        Log("   [>] Source: product IDs 1-5");
+        Log("   [>] Transform: look up product details (async operation)\n");
 
         await foreach (string product in SelectAwaitAsync(
             GenerateNumbersAsync(1, 5),
@@ -76,10 +76,10 @@ public partial class Step20ViewModel : StepViewModelBase
                 return $"Product-{id}: ${id * 9.99m:F2}";
             }))
         {
-            Log($"   ? {product}");
+            Log($"   [OK] {product}");
         }
 
-        Log("\n   ?? Each item was transformed with an async operation.\n");
+        Log("\n   [i] Each item was transformed with an async operation.\n");
     }
 
     // ========================================================================
@@ -88,45 +88,45 @@ public partial class Step20ViewModel : StepViewModelBase
     [RelayCommand]
     private async Task PipelineDemo()
     {
-        Log("--- Async LINQ Pipeline: Where ? Select ? Take ---\n");
+        Log("--- Async LINQ Pipeline: Where -> Select -> Take ---\n");
 
-        Log("   ?? Source: sensor readings 1–20");
-        Log("   ?? Filter: temperature > 25°C");
-        Log("   ?? Transform: format as string");
-        Log("   ?? Take: first 4 results only\n");
+        Log("   [>] Source: sensor readings 1-20");
+        Log("   [>] Filter: temperature > 25 C");
+        Log("   [>] Transform: format as string");
+        Log("   [>] Take: first 4 results only\n");
 
-        // Chain operations together — each processes lazily.
+        // Chain operations together -- each processes lazily.
         var source = GenerateSensorDataAsync(20);
         var filtered = WhereAsync(source, r => r.Temperature > 25.0);
         var formatted = SelectAsync(filtered, r =>
-            $"Sensor={r.Name}, Temp={r.Temperature:F1}°C");
+            $"Sensor={r.Name}, Temp={r.Temperature:F1} C");
         var limited = TakeAsync(formatted, 4);
 
         await foreach (string item in limited)
         {
-            Log($"   ? {item}");
+            Log($"   [OK] {item}");
         }
 
-        Log("\n   ?? The pipeline stopped after 4 matches — remaining items were");
-        Log("   ?? never generated. This is lazy evaluation at work!\n");
+        Log("\n   [i] The pipeline stopped after 4 matches -- remaining items were");
+        Log("   [i] never generated. This is lazy evaluation at work!\n");
     }
 
     // ========================================================================
-    // DEMO 4: ToListAsync — collect into a list.
+    // DEMO 4: ToListAsync -- collect into a list.
     // ========================================================================
     [RelayCommand]
     private async Task CollectDemo()
     {
         Log("--- ToListAsync: Collecting an Async Stream ---\n");
 
-        Log("   ?? Collecting all even numbers from 1–10 into a list...\n");
+        Log("   [>] Collecting all even numbers from 1-10 into a list...\n");
 
         var source = WhereAsync(GenerateNumbersAsync(1, 10), n => n % 2 == 0);
         List<int> results = await ToListAsync(source);
 
-        Log($"   ? Collected {results.Count} items: [{string.Join(", ", results)}]");
-        Log("\n   ?? ToListAsync buffers everything into memory.");
-        Log("   ?? Use 'await foreach' when possible to stay streaming.\n");
+        Log($"   [OK] Collected {results.Count} items: [{string.Join(", ", results)}]");
+        Log("\n   [i] ToListAsync buffers everything into memory.");
+        Log("   [TIP] Use 'await foreach' when possible to stay streaming.\n");
     }
 
     // ========================================================================
@@ -134,7 +134,7 @@ public partial class Step20ViewModel : StepViewModelBase
     // ========================================================================
 
     /// <summary>
-    /// Async Where — filters items from an async stream.
+    /// Async Where -- filters items from an async stream.
     /// </summary>
     private static async IAsyncEnumerable<T> WhereAsync<T>(
         IAsyncEnumerable<T> source,
@@ -149,7 +149,7 @@ public partial class Step20ViewModel : StepViewModelBase
     }
 
     /// <summary>
-    /// Async Select — transforms each item synchronously.
+    /// Async Select -- transforms each item synchronously.
     /// </summary>
     private static async IAsyncEnumerable<TResult> SelectAsync<TSource, TResult>(
         IAsyncEnumerable<TSource> source,
@@ -163,7 +163,7 @@ public partial class Step20ViewModel : StepViewModelBase
     }
 
     /// <summary>
-    /// Async SelectAwait — transforms each item with an async operation.
+    /// Async SelectAwait -- transforms each item with an async operation.
     /// </summary>
     private static async IAsyncEnumerable<TResult> SelectAwaitAsync<TSource, TResult>(
         IAsyncEnumerable<TSource> source,
@@ -177,7 +177,7 @@ public partial class Step20ViewModel : StepViewModelBase
     }
 
     /// <summary>
-    /// Async Take — yields at most 'count' items.
+    /// Async Take -- yields at most 'count' items.
     /// </summary>
     private static async IAsyncEnumerable<T> TakeAsync<T>(
         IAsyncEnumerable<T> source,
@@ -193,7 +193,7 @@ public partial class Step20ViewModel : StepViewModelBase
     }
 
     /// <summary>
-    /// Async ToList — collects all items into a List.
+    /// Async ToList -- collects all items into a List.
     /// </summary>
     private static async Task<List<T>> ToListAsync<T>(
         IAsyncEnumerable<T> source,

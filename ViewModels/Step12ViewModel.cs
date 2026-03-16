@@ -10,10 +10,10 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. IAsyncEnumerable<T> — returns items one at a time with async pauses.
-// 2. "yield return" in async methods — produces items lazily.
-// 3. "await foreach" — consumes items as they arrive.
-// 4. [EnumeratorCancellation] — receives WithCancellation token.
+// 1. IAsyncEnumerable<T> -- returns items one at a time with async pauses.
+// 2. "yield return" in async methods -- produces items lazily.
+// 3. "await foreach" -- consumes items as they arrive.
+// 4. [EnumeratorCancellation] -- receives WithCancellation token.
 //
 // MVVM NOTE:
 // ----------
@@ -35,9 +35,9 @@ public partial class Step12ViewModel : StepViewModelBase
     {
         IsStreaming = true;
 
-        Log("?? Starting async stream of sensor data...\n");
+        Log("[>] Starting async stream of sensor data...\n");
         Log("   Each reading arrives one at a time (every 800ms).");
-        Log("   Notice: items appear IMMEDIATELY — no waiting for all data!\n");
+        Log("   Notice: items appear IMMEDIATELY -- no waiting for all data!\n");
 
         try
         {
@@ -47,16 +47,16 @@ public partial class Step12ViewModel : StepViewModelBase
                 GetSensorReadingsAsync().WithCancellation(token))
             {
                 count++;
-                Log($"   ?? #{count}: Sensor={reading.SensorName}, " +
-                    $"Temp={reading.Temperature:F1}°C, " +
+                Log($"   [#{count}] Sensor={reading.SensorName}, " +
+                    $"Temp={reading.Temperature:F1} C, " +
                     $"Humidity={reading.Humidity}%");
             }
 
-            Log($"\n? Stream completed. Received {count} readings.\n");
+            Log($"\n[OK] Stream completed. Received {count} readings.\n");
         }
         catch (OperationCanceledException)
         {
-            Log("\n?? Stream was cancelled by user.\n");
+            Log("\n[CANCELLED] Stream was cancelled by user.\n");
         }
         finally
         {

@@ -12,15 +12,15 @@ namespace AsynAwaitExamples.ViewModels;
 // 1. DEADLOCK: When two things wait for each other forever.
 //    - In WPF, calling .Result or .Wait() on the UI thread BLOCKS the UI thread.
 //    - The awaited task needs the UI thread to resume (because of SynchronizationContext).
-//    - UI thread is blocked ? task can't resume ? task never completes ? deadlock!
+//    - UI thread is blocked -> task can't resume -> task never completes -> deadlock!
 //
-// 2. .Result and .Wait() — SYNCHRONOUS blockers.
+// 2. .Result and .Wait() -- SYNCHRONOUS blockers.
 //    - task.Result blocks until the task completes, then returns the value.
 //    - task.Wait() blocks until the task completes (no return value).
 //    - BOTH are safe on background threads or when the task is already completed.
 //    - BOTH are DANGEROUS on the UI thread (or any thread with a SynchronizationContext).
 //
-// 3. .GetAwaiter().GetResult() — same problem, slightly different exception behavior.
+// 3. .GetAwaiter().GetResult() -- same problem, slightly different exception behavior.
 //
 // 4. THE FIX: Always use "await" instead of .Result or .Wait().
 //    - "await" yields the thread, so the UI thread is free to process the continuation.
@@ -53,10 +53,10 @@ public partial class Step14ViewModel : StepViewModelBase
     {
         Log("--- The CORRECT Way: Using await ---\n");
 
-        Log("   ? Calling async method with await...");
+        Log("   [>] Calling async method with await...");
         string result = await GetDataAsync();
-        Log($"   ? Got result: {result}");
-        Log("   ?? No deadlock! The UI thread was free during the await.\n");
+        Log($"   [OK] Got result: {result}");
+        Log("   [i] No deadlock! The UI thread was free during the await.\n");
     }
 
     // ========================================================================
@@ -67,23 +67,23 @@ public partial class Step14ViewModel : StepViewModelBase
     {
         Log("--- .Result on a Background Thread (safe but not recommended) ---\n");
 
-        Log("   ?? Running on background thread via Task.Run...");
+        Log("   [>] Running on background thread via Task.Run...");
 
         string result = await Task.Run(() =>
         {
-            // This is a BACKGROUND thread — no SynchronizationContext.
+            // This is a BACKGROUND thread -- no SynchronizationContext.
             // .Result won't deadlock here (but await is still preferred).
             Task<string> task = GetDataAsync();
             return task.Result; // Safe here, dangerous on UI thread!
         });
 
-        Log($"   ? Got result: {result}");
-        Log("   ?? This worked because Task.Run uses a thread pool thread.");
-        Log("   ?? The same code on the UI thread would DEADLOCK.\n");
+        Log($"   [OK] Got result: {result}");
+        Log("   [i] This worked because Task.Run uses a thread pool thread.");
+        Log("   [WARN] The same code on the UI thread would DEADLOCK.\n");
     }
 
     // ========================================================================
-    // DEMO 3: Demonstrate the DANGER — a simulated near-deadlock scenario.
+    // DEMO 3: Demonstrate the DANGER -- a simulated near-deadlock scenario.
     // We can't actually deadlock and recover, so we show the pattern and explain.
     // ========================================================================
     [RelayCommand]
@@ -91,25 +91,25 @@ public partial class Step14ViewModel : StepViewModelBase
     {
         Log("--- Why .Result / .Wait() Causes Deadlocks ---\n");
 
-        Log("   ?? The Dangerous Pattern:");
-        Log("   ???????????????????????????????????????????????????");
-        Log("   ?  // ON THE UI THREAD:                           ?");
-        Log("   ?  string result = GetDataAsync().Result; // ??   ?");
-        Log("   ???????????????????????????????????????????????????");
+        Log("   [WARN] The Dangerous Pattern:");
+        Log("   +---------------------------------------------------+");
+        Log("   |  // ON THE UI THREAD:                              |");
+        Log("   |  string result = GetDataAsync().Result; // BAD!    |");
+        Log("   +---------------------------------------------------+");
         Log("");
-        Log("   ?? What happens step-by-step:");
-        Log("   1?? GetDataAsync() starts and hits 'await Task.Delay(500)'.");
-        Log("   2?? The await captures the SynchronizationContext (UI thread).");
-        Log("   3?? .Result BLOCKS the UI thread, waiting for the task to finish.");
-        Log("   4?? Task.Delay completes, and the continuation wants to run...");
-        Log("   5?? ...but it needs the UI thread (captured in step 2).");
-        Log("   6?? The UI thread is blocked by .Result (step 3).");
-        Log("   7?? ?? DEADLOCK! Both are waiting for each other forever.");
+        Log("   [i] What happens step-by-step:");
+        Log("   1. GetDataAsync() starts and hits 'await Task.Delay(500)'.");
+        Log("   2. The await captures the SynchronizationContext (UI thread).");
+        Log("   3. .Result BLOCKS the UI thread, waiting for the task to finish.");
+        Log("   4. Task.Delay completes, and the continuation wants to run...");
+        Log("   5. ...but it needs the UI thread (captured in step 2).");
+        Log("   6. The UI thread is blocked by .Result (step 3).");
+        Log("   7. DEADLOCK! Both are waiting for each other forever.");
         Log("");
-        Log("   ? The Fix:");
-        Log("   ???????????????????????????????????????????????????");
-        Log("   ?  string result = await GetDataAsync(); // ?    ?");
-        Log("   ???????????????????????????????????????????????????");
+        Log("   [OK] The Fix:");
+        Log("   +---------------------------------------------------+");
+        Log("   |  string result = await GetDataAsync(); // GOOD     |");
+        Log("   +---------------------------------------------------+");
         Log("   await RELEASES the UI thread, so the continuation can run.\n");
     }
 
@@ -121,7 +121,7 @@ public partial class Step14ViewModel : StepViewModelBase
     {
         Log("--- ConfigureAwait(false) as an Escape Hatch ---\n");
 
-        Log("   ?? If a library method uses ConfigureAwait(false) internally,");
+        Log("   [i] If a library method uses ConfigureAwait(false) internally,");
         Log("      it does NOT need the UI thread to resume.");
         Log("      This PREVENTS the deadlock even with .Result.\n");
 
@@ -133,18 +133,18 @@ public partial class Step14ViewModel : StepViewModelBase
             return GetDataWithConfigureAwaitAsync().Result;
         });
 
-        Log($"   ? Got result: {result}");
-        Log("   ?? ConfigureAwait(false) told the continuation:");
+        Log($"   [OK] Got result: {result}");
+        Log("   [i] ConfigureAwait(false) told the continuation:");
         Log("      'Don't bother returning to the UI thread.'");
         Log("      So there's no conflict, even with .Result on a thread pool thread.\n");
-        Log("   ?? Best practice: ALWAYS prefer await over .Result/.Wait().");
+        Log("   [TIP] Best practice: ALWAYS prefer await over .Result/.Wait().");
         Log("      ConfigureAwait(false) is for LIBRARY code, not a deadlock fix.\n");
     }
 
     // --- Helper methods ---
 
     /// <summary>
-    /// Standard async method — captures SynchronizationContext by default.
+    /// Standard async method -- captures SynchronizationContext by default.
     /// Calling .Result on the UI thread with this method will DEADLOCK.
     /// </summary>
     private static async Task<string> GetDataAsync()
@@ -154,7 +154,7 @@ public partial class Step14ViewModel : StepViewModelBase
     }
 
     /// <summary>
-    /// Async method with ConfigureAwait(false) — does NOT capture the SynchronizationContext.
+    /// Async method with ConfigureAwait(false) -- does NOT capture the SynchronizationContext.
     /// Safer for library code, but the continuation might run on a different thread.
     /// </summary>
     private static async Task<string> GetDataWithConfigureAwaitAsync()

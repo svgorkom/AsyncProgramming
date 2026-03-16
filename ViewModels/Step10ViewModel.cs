@@ -9,15 +9,15 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. SynchronizationContext — WPF captures it so await resumes on UI thread.
-// 2. ConfigureAwait(false) — skip returning to UI thread after await.
-// 3. Task.Run — explicitly runs code on a background thread.
+// 1. SynchronizationContext -- WPF captures it so await resumes on UI thread.
+// 2. ConfigureAwait(false) -- skip returning to UI thread after await.
+// 3. Task.Run -- explicitly runs code on a background thread.
 //
 // MVVM NOTE:
 // ----------
 // Dispatcher.Invoke is still needed inside Task.Run blocks to marshal back
 // to the UI thread for property updates. This is inherent to the threading
-// model — MVVM doesn't eliminate threading concerns, it organizes them.
+// model -- MVVM doesn't eliminate threading concerns, it organizes them.
 // ============================================================================
 
 public partial class Step10ViewModel : StepViewModelBase
@@ -38,21 +38,21 @@ public partial class Step10ViewModel : StepViewModelBase
     {
         Log("--- Thread ID Demonstration ---\n");
 
-        Log($"   ?? BEFORE await: Thread ID = {Environment.CurrentManagedThreadId} (UI thread)");
+        Log($"   [1] BEFORE await: Thread ID = {Environment.CurrentManagedThreadId} (UI thread)");
 
         await Task.Delay(500);
-        Log($"   ?? AFTER await Task.Delay: Thread ID = {Environment.CurrentManagedThreadId} (still UI thread!)");
+        Log($"   [2] AFTER await Task.Delay: Thread ID = {Environment.CurrentManagedThreadId} (still UI thread!)");
 
         await Task.Run(() =>
         {
             int bgThreadId = Environment.CurrentManagedThreadId;
             _dispatcher.Invoke(() =>
             {
-                Log($"   ?? INSIDE Task.Run: Thread ID = {bgThreadId} (background thread!)");
+                Log($"   [3] INSIDE Task.Run: Thread ID = {bgThreadId} (background thread!)");
             });
         });
 
-        Log($"   ?? AFTER await Task.Run: Thread ID = {Environment.CurrentManagedThreadId} (back on UI thread!)");
+        Log($"   [4] AFTER await Task.Run: Thread ID = {Environment.CurrentManagedThreadId} (back on UI thread!)");
 
         int threadBeforeConfigureAwait = Environment.CurrentManagedThreadId;
         await Task.Delay(500).ConfigureAwait(false);
@@ -60,9 +60,9 @@ public partial class Step10ViewModel : StepViewModelBase
 
         _dispatcher.Invoke(() =>
         {
-            Log($"\n   ?? BEFORE ConfigureAwait(false): Thread ID = {threadBeforeConfigureAwait}");
-            Log($"   ?? AFTER  ConfigureAwait(false): Thread ID = {threadAfterConfigureAwait}");
-            Log("   ?? With ConfigureAwait(false), the thread MAY change after await.\n");
+            Log($"\n   [5] BEFORE ConfigureAwait(false): Thread ID = {threadBeforeConfigureAwait}");
+            Log($"   [6] AFTER  ConfigureAwait(false): Thread ID = {threadAfterConfigureAwait}");
+            Log("   [i] With ConfigureAwait(false), the thread MAY change after await.\n");
         });
     }
 
@@ -74,8 +74,8 @@ public partial class Step10ViewModel : StepViewModelBase
     {
         Log("--- Task.Run for CPU-Heavy Work ---\n");
 
-        Log("   ?? Starting CPU-heavy calculation on background thread...");
-        Log($"   ?? UI thread ID: {Environment.CurrentManagedThreadId}");
+        Log("   [>] Starting CPU-heavy calculation on background thread...");
+        Log($"   [i] UI thread ID: {Environment.CurrentManagedThreadId}");
 
         long result = await Task.Run(() =>
         {
@@ -87,8 +87,8 @@ public partial class Step10ViewModel : StepViewModelBase
             return sum;
         });
 
-        Log($"   ? Calculation result: {result:N0}");
-        Log($"   ?? Back on UI thread: {Environment.CurrentManagedThreadId}");
-        Log("   ?? The UI stayed responsive during the calculation!\n");
+        Log($"   [OK] Calculation result: {result:N0}");
+        Log($"   [i] Back on UI thread: {Environment.CurrentManagedThreadId}");
+        Log("   [i] The UI stayed responsive during the calculation!\n");
     }
 }

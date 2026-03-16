@@ -9,14 +9,14 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. IProgress<T> — The interface your async methods should accept.
-// 2. Progress<T> — Automatically marshals callbacks to the UI thread.
+// 1. IProgress<T> -- The interface your async methods should accept.
+// 2. Progress<T> -- Automatically marshals callbacks to the UI thread.
 //
 // MVVM NOTE:
 // ----------
 // The ViewModel exposes ProgressPercentage and ProgressMessage as bindable
 // properties. The View's ProgressBar and TextBlock bind directly to these.
-// Progress<T> callback updates ViewModel properties — no direct UI coupling.
+// Progress<T> callback updates ViewModel properties -- no direct UI coupling.
 // ============================================================================
 
 public partial class Step07ViewModel : StepViewModelBase
@@ -36,27 +36,27 @@ public partial class Step07ViewModel : StepViewModelBase
         IsRunning = true;
         ProgressPercentage = 0;
 
-        Log("?? Starting operation with progress reporting...\n");
+        Log("[>] Starting operation with progress reporting...\n");
 
         // Create a Progress<T> that updates ViewModel properties.
         // Progress<T> automatically marshals to the UI thread.
         var progress = new Progress<ProgressInfo>(info =>
         {
             ProgressPercentage = info.Percentage;
-            ProgressMessage = $"{info.Percentage}% — {info.Message}";
-            Log($"   ?? {info.Percentage}% — {info.Message}");
+            ProgressMessage = $"{info.Percentage}% -- {info.Message}";
+            Log($"   [{info.Percentage}%] {info.Message}");
         });
 
         await ProcessFilesAsync(progress);
 
-        ProgressMessage = "? Done!";
-        Log("\n? All files processed!\n");
+        ProgressMessage = "Done!";
+        Log("\n[OK] All files processed!\n");
         IsRunning = false;
     }
 
     /// <summary>
     /// Simulates processing multiple files. Reports progress via IProgress&lt;T&gt;.
-    /// This method has NO reference to any UI control — pure logic.
+    /// This method has NO reference to any UI control -- pure logic.
     /// </summary>
     private static async Task ProcessFilesAsync(IProgress<ProgressInfo> progress)
     {

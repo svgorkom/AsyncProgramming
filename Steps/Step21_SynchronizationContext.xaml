@@ -27,16 +27,16 @@ deadlocks, why ConfigureAwait(false) prevents deadlocks, and why ASP.NET Core
 doesn't have the same problems as WPF.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Show current SynchronizationContext"
+                    Content="[1] Show current SynchronizationContext"
                     Command="{Binding ShowContextCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Context capture vs ConfigureAwait(false)"
+                    Content="[2] Context capture vs ConfigureAwait(false)"
                     Command="{Binding ContextCaptureCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? How context causes deadlocks (explanation)"
+                    Content="[3] How context causes deadlocks (explanation)"
                     Command="{Binding ExplainDeadlockCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Manual SynchronizationContext.Post"
+                    Content="[4] Manual SynchronizationContext.Post"
                     Command="{Binding ManualPostCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="280"

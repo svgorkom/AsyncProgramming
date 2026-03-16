@@ -24,16 +24,16 @@ RULE: If your class holds async resources, implement IAsyncDisposable.
 The "await using" ensures DisposeAsync is called even if exceptions occur.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Basic 'await using'"
+                    Content="[1] Basic 'await using'"
                     Command="{Binding BasicAwaitUsingCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Multiple async resources"
+                    Content="[2] Multiple async resources"
                     Command="{Binding MultipleResourcesCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Without await using (resource leak risk)"
+                    Content="[3] Without await using (resource leak risk)"
                     Command="{Binding WithoutAwaitUsingCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Show implementation pattern"
+                    Content="[4] Show implementation pattern"
                     Command="{Binding ShowPatternCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="280"

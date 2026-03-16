@@ -1,0 +1,41 @@
+# EditorConfig helps maintain consistent coding styles
+# https://editorconfig.org
+
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# files
+[*.cs]
+charset = utf-8
+
+# XAML files
+[*.xaml]
+charset = utf-8
+
+# XML and project files
+[*.{csproj,props,targets,xml,config}]
+charset = utf-8
+indent_size = 2
+
+# Markdown files
+[*.md]
+charset = utf-8
+trim_trailing_whitespace = false
+
+# JSON files
+[*.json]
+charset = utf-8
+indent_size = 2
+
+# Solution files
+[*.sln]
+charset = utf-8
+indent_style = tab

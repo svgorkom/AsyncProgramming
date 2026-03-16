@@ -8,7 +8,7 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. Test methods can be "async Task" — all major test frameworks support it.
+// 1. Test methods can be "async Task" -- all major test frameworks support it.
 //    - [Fact] public async Task MyTest() { ... await ... }
 //    - [Test] public async Task MyTest() { ... await ... }
 //    - The test runner awaits the method, so it fully completes before moving on.
@@ -16,8 +16,8 @@ namespace AsynAwaitExamples.ViewModels;
 // 2. Testing async exceptions:
 //    - Use Assert.ThrowsAsync<T>() to verify an async method throws.
 //    - You pass a Func<Task>, not invoke the method directly.
-//    - ? BAD:  Assert.Throws<Exception>(() => MyAsync());  // won't catch async throws!
-//    - ? GOOD: await Assert.ThrowsAsync<Exception>(() => MyAsync());
+//    - BAD:  Assert.Throws<Exception>(() => MyAsync());  // won't catch async throws!
+//    - GOOD: await Assert.ThrowsAsync<Exception>(() => MyAsync());
 //
 // 3. Testing cancellation:
 //    - Create a CancellationTokenSource, cancel it, pass the token.
@@ -25,7 +25,7 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // 4. Testing timeouts:
 //    - Use Task.WaitAsync(timeout) to prevent tests from hanging.
-//    - If the method takes too long, TimeoutException is thrown ? test fails fast.
+//    - If the method takes too long, TimeoutException is thrown -> test fails fast.
 //
 // 5. Mocking async dependencies:
 //    - Return Task.FromResult(value) from mocks for synchronous completion.
@@ -56,10 +56,10 @@ public partial class Step23ViewModel : StepViewModelBase
         Log("   }\n");
 
         // Simulate running the test.
-        Log("   ?? Running simulated test...");
+        Log("   [>] Running simulated test...");
         string result = await SimulatedGetUserNameAsync(1);
         bool passed = result == "Alice";
-        Log($"   {(passed ? "? PASSED" : "? FAILED")}: " +
+        Log($"   {(passed ? "[OK] PASSED" : "[X] FAILED")}: " +
             $"Expected \"Alice\", got \"{result}\"\n");
     }
 
@@ -80,21 +80,21 @@ public partial class Step23ViewModel : StepViewModelBase
         Log("           () => service.GetUserNameAsync(-1));");
         Log("   }\n");
 
-        Log("   ?? Common mistake:");
-        Log("   ? Assert.Throws<ArgumentException>(() => GetUserAsync(-1));");
-        Log("   ? This passes a Func<Task>, not Func<T>. The exception is");
+        Log("   [i] Common mistake:");
+        Log("   [X] Assert.Throws<ArgumentException>(() => GetUserAsync(-1));");
+        Log("   [i] This passes a Func<Task>, not Func<T>. The exception is");
         Log("     inside the Task and won't be caught by Assert.Throws!\n");
 
         // Simulate running the test.
-        Log("   ?? Running simulated test...");
+        Log("   [>] Running simulated test...");
         try
         {
             await SimulatedGetUserNameAsync(-1);
-            Log("   ? FAILED: No exception was thrown.");
+            Log("   [X] FAILED: No exception was thrown.");
         }
         catch (ArgumentException ex)
         {
-            Log($"   ? PASSED: Caught expected {ex.GetType().Name}: \"{ex.Message}\"\n");
+            Log($"   [OK] PASSED: Caught expected {ex.GetType().Name}: \"{ex.Message}\"\n");
         }
     }
 
@@ -117,7 +117,7 @@ public partial class Step23ViewModel : StepViewModelBase
         Log("   }\n");
 
         // Simulate running the test.
-        Log("   ?? Running simulated test...");
+        Log("   [>] Running simulated test...");
 
         using var cts = new CancellationTokenSource();
         cts.Cancel(); // Cancel immediately.
@@ -125,11 +125,11 @@ public partial class Step23ViewModel : StepViewModelBase
         try
         {
             await SimulatedLongWorkAsync(cts.Token);
-            Log("   ? FAILED: No exception was thrown.");
+            Log("   [X] FAILED: No exception was thrown.");
         }
         catch (OperationCanceledException)
         {
-            Log("   ? PASSED: OperationCanceledException was thrown as expected.\n");
+            Log("   [OK] PASSED: OperationCanceledException was thrown as expected.\n");
         }
     }
 
@@ -151,30 +151,30 @@ public partial class Step23ViewModel : StepViewModelBase
         Log("       Assert.NotNull(result);");
         Log("   }\n");
 
-        // Test 1: Fast operation — should succeed.
-        Log("   ?? Test A: Fast operation (200ms) with 1-second timeout...");
+        // Test 1: Fast operation -- should succeed.
+        Log("   [>] Test A: Fast operation (200ms) with 1-second timeout...");
         try
         {
             string result = await SimulatedFastOpAsync()
                 .WaitAsync(TimeSpan.FromSeconds(1));
-            Log($"   ? PASSED: Got \"{result}\" within timeout.\n");
+            Log($"   [OK] PASSED: Got \"{result}\" within timeout.\n");
         }
         catch (TimeoutException)
         {
-            Log("   ? FAILED: Operation timed out.\n");
+            Log("   [X] FAILED: Operation timed out.\n");
         }
 
-        // Test 2: Slow operation — should timeout.
-        Log("   ?? Test B: Slow operation (3s) with 1-second timeout...");
+        // Test 2: Slow operation -- should timeout.
+        Log("   [>] Test B: Slow operation (3s) with 1-second timeout...");
         try
         {
             string result = await SimulatedSlowOpAsync()
                 .WaitAsync(TimeSpan.FromSeconds(1));
-            Log($"   ? FAILED: Should have timed out, got \"{result}\".");
+            Log($"   [X] FAILED: Should have timed out, got \"{result}\".");
         }
         catch (TimeoutException)
         {
-            Log("   ? PASSED (expected): TimeoutException thrown — test didn't hang!\n");
+            Log("   [OK] PASSED (expected): TimeoutException thrown -- test didn't hang!\n");
         }
     }
 
@@ -205,17 +205,17 @@ public partial class Step23ViewModel : StepViewModelBase
         Log("           new InvalidOperationException(\"Not found\")));\n");
 
         // Demonstrate the patterns.
-        Log("   ?? Demonstrating mock patterns:\n");
+        Log("   [>] Demonstrating mock patterns:\n");
 
         // Task.FromResult
         Task<string> mockSuccess = Task.FromResult("Alice");
         string result = await mockSuccess;
-        Log($"   ? Task.FromResult: {result}");
+        Log($"   [OK] Task.FromResult: {result}");
 
         // Task.CompletedTask
         Task mockVoid = Task.CompletedTask;
         await mockVoid;
-        Log("   ? Task.CompletedTask: completed immediately");
+        Log("   [OK] Task.CompletedTask: completed immediately");
 
         // Task.FromException
         Task<string> mockFailure = Task.FromException<string>(
@@ -226,10 +226,10 @@ public partial class Step23ViewModel : StepViewModelBase
         }
         catch (InvalidOperationException ex)
         {
-            Log($"   ? Task.FromException: threw \"{ex.Message}\"");
+            Log($"   [OK] Task.FromException: threw \"{ex.Message}\"");
         }
 
-        Log("\n   ?? These patterns let you test async code without real I/O.\n");
+        Log("\n   [TIP] These patterns let you test async code without real I/O.\n");
     }
 
     // --- Simulated services for test demos ---

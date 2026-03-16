@@ -9,16 +9,16 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. CancellationTokenSource (CTS) — The CONTROLLER. Call .Cancel() to stop.
-// 2. CancellationToken — The SIGNAL passed into async methods.
-// 3. token.ThrowIfCancellationRequested() — Throws OperationCanceledException.
-// 4. Task.Delay(milliseconds, token) — Stops immediately when cancelled.
+// 1. CancellationTokenSource (CTS) -- The CONTROLLER. Call .Cancel() to stop.
+// 2. CancellationToken -- The SIGNAL passed into async methods.
+// 3. token.ThrowIfCancellationRequested() -- Throws OperationCanceledException.
+// 4. Task.Delay(milliseconds, token) -- Stops immediately when cancelled.
 //
 // MVVM NOTE:
 // ----------
 // We use [RelayCommand(IncludeCancelCommand = true)] which auto-generates both
 // a StartLongOperationCommand AND a StartLongOperationCancelCommand. The toolkit
-// handles CancellationToken plumbing for us — no manual CTS management needed!
+// handles CancellationToken plumbing for us -- no manual CTS management needed!
 // ============================================================================
 
 public partial class Step06ViewModel : StepViewModelBase
@@ -37,17 +37,17 @@ public partial class Step06ViewModel : StepViewModelBase
     private async Task StartLongOperation(CancellationToken token)
     {
         IsRunning = true;
-        Log("?? Starting a long operation (10 steps)...");
+        Log("[>] Starting a long operation (10 steps)...");
         Log("   Press Cancel to stop it early!\n");
 
         try
         {
             await DoLongWorkAsync(token);
-            Log("? Operation completed successfully!\n");
+            Log("[OK] Operation completed successfully!\n");
         }
         catch (OperationCanceledException)
         {
-            Log("?? Operation was CANCELLED by the user.\n");
+            Log("[CANCELLED] Operation was CANCELLED by the user.\n");
         }
         finally
         {
@@ -64,7 +64,7 @@ public partial class Step06ViewModel : StepViewModelBase
         for (int i = 1; i <= 10; i++)
         {
             token.ThrowIfCancellationRequested();
-            Log($"   ?? Processing step {i} of 10...");
+            Log($"   [>] Processing step {i} of 10...");
             await Task.Delay(800, token);
         }
     }

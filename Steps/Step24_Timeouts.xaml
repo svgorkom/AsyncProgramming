@@ -27,19 +27,19 @@ PRODUCTION PATTERN: Use both together for robustness.
    WaitAsync is a safety net if the method ignores cancellation.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? CancelAfter (cooperative cancellation)"
+                    Content="[1] CancelAfter (cooperative cancellation)"
                     Command="{Binding CancelAfterDemoCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="? Task.WaitAsync (timeout without cancellation)"
+                    Content="[2] Task.WaitAsync (timeout without cancellation)"
                     Command="{Binding WaitAsyncDemoCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Combined: CancelAfter + WaitAsync"
+                    Content="[3] Combined: CancelAfter + WaitAsync"
                     Command="{Binding CombinedDemoCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="? Timeout success (finishes in time)"
+                    Content="[4] Timeout success (finishes in time)"
                     Command="{Binding SuccessfulTimeoutCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
 

@@ -9,13 +9,13 @@ namespace AsynAwaitExamples.ViewModels;
 // KEY CONCEPTS:
 // -------------
 // 1. try/catch works normally with await.
-// 2. Task.WhenAll and multiple exceptions — only the FIRST is thrown at await.
+// 2. Task.WhenAll and multiple exceptions -- only the FIRST is thrown at await.
 // 3. The exception call stack is preserved across async method calls.
 //
 // MVVM NOTE:
 // ----------
 // Each scenario is a separate async command. Exception handling lives in the
-// ViewModel — the View simply binds buttons to commands and output to text.
+// ViewModel -- the View simply binds buttons to commands and output to text.
 // ============================================================================
 
 public partial class Step08ViewModel : StepViewModelBase
@@ -30,14 +30,14 @@ public partial class Step08ViewModel : StepViewModelBase
 
         try
         {
-            Log("?? Calling a method that will fail...");
+            Log("[>] Calling a method that will fail...");
             await FailingOperationAsync("Database connection timeout");
             Log("This will never print.");
         }
         catch (InvalidOperationException ex)
         {
-            Log($"?? Caught exception: {ex.Message}");
-            Log("? The app didn't crash — we handled it gracefully!\n");
+            Log($"[!] Caught exception: {ex.Message}");
+            Log("[OK] The app didn't crash -- we handled it gracefully!\n");
         }
     }
 
@@ -61,14 +61,14 @@ public partial class Step08ViewModel : StepViewModelBase
         }
         catch (InvalidOperationException ex)
         {
-            Log($"?? First exception caught: {ex.Message}");
+            Log($"[!] First exception caught: {ex.Message}");
 
             if (allTasks.Exception is not null)
             {
-                Log($"\n?? Total exceptions: {allTasks.Exception.InnerExceptions.Count}");
+                Log($"\n[i] Total exceptions: {allTasks.Exception.InnerExceptions.Count}");
                 foreach (var innerEx in allTasks.Exception.InnerExceptions)
                 {
-                    Log($"   ? {innerEx.Message}");
+                    Log($"   - {innerEx.Message}");
                 }
             }
             Log("");
@@ -85,13 +85,13 @@ public partial class Step08ViewModel : StepViewModelBase
 
         try
         {
-            Log("?? Calling MethodA ? MethodB ? MethodC (which throws)...");
+            Log("[>] Calling MethodA -> MethodB -> MethodC (which throws)...");
             await MethodA();
         }
         catch (Exception ex)
         {
-            Log($"?? Caught in event handler: {ex.Message}");
-            Log($"\n?? Stack trace shows the full call chain:");
+            Log($"[!] Caught in event handler: {ex.Message}");
+            Log($"\n[i] Stack trace shows the full call chain:");
 
             string[] stackLines = ex.StackTrace?.Split('\n') ?? [];
             foreach (string line in stackLines.Take(5))
@@ -127,6 +127,6 @@ public partial class Step08ViewModel : StepViewModelBase
     private static async Task MethodC()
     {
         await Task.Delay(200);
-        throw new ApplicationException("?? Something went wrong deep in MethodC!");
+        throw new ApplicationException("Something went wrong deep in MethodC!");
     }
 }

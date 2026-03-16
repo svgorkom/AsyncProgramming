@@ -22,13 +22,13 @@ This is much cleaner than the old "WhenAny in a loop" pattern, and it gives
 a better user experience: results appear on screen as soon as they are ready.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="? Process tasks in completion order"
+                    Content="[1] Process tasks in completion order"
                     Command="{Binding WhenEachDemoCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Compare WhenAll vs WhenEach UX"
+                    Content="[2] Compare WhenAll vs WhenEach UX"
                     Command="{Binding CompareWhenAllVsWhenEachCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="??? WhenEach with error handling"
+                    Content="[3] WhenEach with error handling"
                     Command="{Binding WhenEachWithErrorsCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="300"

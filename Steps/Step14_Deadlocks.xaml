@@ -24,16 +24,16 @@ RULE: NEVER use .Result or .Wait() on the UI thread.
 ALWAYS use "await" instead. It releases the thread so the continuation can run.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="? The CORRECT way (await)"
+                    Content="[1] The CORRECT way (await)"
                     Command="{Binding CorrectWayCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? .Result on a background thread (safe but not ideal)"
+                    Content="[2] .Result on a background thread (safe but not ideal)"
                     Command="{Binding ResultOnBackgroundThreadCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Explain the deadlock step-by-step"
+                    Content="[3] Explain the deadlock step-by-step"
                     Command="{Binding ShowDeadlockExplanationCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? ConfigureAwait(false) as escape hatch"
+                    Content="[4] ConfigureAwait(false) as escape hatch"
                     Command="{Binding ConfigureAwaitEscapeCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="300"

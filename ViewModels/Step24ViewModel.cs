@@ -16,7 +16,7 @@ namespace AsynAwaitExamples.ViewModels;
 //    - Throws OperationCanceledException when time is up.
 //    - Best when the method already accepts CancellationToken.
 //
-// 2. Task.WaitAsync(timeout) — .NET 6+
+// 2. Task.WaitAsync(timeout) -- .NET 6+
 //    - Wraps an existing task with a timeout.
 //    - If the task doesn't complete in time, throws TimeoutException.
 //    - DOES NOT cancel the underlying task! It just stops waiting.
@@ -45,7 +45,7 @@ public partial class Step24ViewModel : StepViewModelBase
     private bool _isRunning;
 
     // ========================================================================
-    // DEMO 1: CancelAfter — automatic cancellation after timeout.
+    // DEMO 1: CancelAfter -- automatic cancellation after timeout.
     // ========================================================================
     [RelayCommand]
     private async Task CancelAfterDemo()
@@ -53,8 +53,8 @@ public partial class Step24ViewModel : StepViewModelBase
         IsRunning = true;
         Log("--- CancelAfter: Automatic Timeout Cancellation ---\n");
 
-        Log("   ?? Setting timeout: 2 seconds");
-        Log("   ? Starting operation that takes 5 seconds...\n");
+        Log("   [i] Setting timeout: 2 seconds");
+        Log("   [>] Starting operation that takes 5 seconds...\n");
 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(2)); // Auto-cancel after 2s.
@@ -69,9 +69,9 @@ public partial class Step24ViewModel : StepViewModelBase
         catch (OperationCanceledException)
         {
             sw.Stop();
-            Log($"   ?? Cancelled after {sw.ElapsedMilliseconds}ms!");
-            Log("   ?? CancelAfter automatically triggered the cancellation.");
-            Log("   ?? The method cooperatively stopped when it checked the token.\n");
+            Log($"   [TIMEOUT] Cancelled after {sw.ElapsedMilliseconds}ms!");
+            Log("   [i] CancelAfter automatically triggered the cancellation.");
+            Log("   [i] The method cooperatively stopped when it checked the token.\n");
         }
         finally
         {
@@ -80,7 +80,7 @@ public partial class Step24ViewModel : StepViewModelBase
     }
 
     // ========================================================================
-    // DEMO 2: Task.WaitAsync — timeout on the waiting side.
+    // DEMO 2: Task.WaitAsync -- timeout on the waiting side.
     // ========================================================================
     [RelayCommand]
     private async Task WaitAsyncDemo()
@@ -88,8 +88,8 @@ public partial class Step24ViewModel : StepViewModelBase
         IsRunning = true;
         Log("--- Task.WaitAsync: Timeout Without Cancellation ---\n");
 
-        Log("   ?? Timeout: 1.5 seconds");
-        Log("   ? Calling a method that takes 4 seconds (no cancellation support)...\n");
+        Log("   [i] Timeout: 1.5 seconds");
+        Log("   [>] Calling a method that takes 4 seconds (no cancellation support)...\n");
 
         var sw = Stopwatch.StartNew();
 
@@ -100,15 +100,15 @@ public partial class Step24ViewModel : StepViewModelBase
             string result = await NonCancellableOperationAsync()
                 .WaitAsync(TimeSpan.FromSeconds(1.5));
 
-            Log($"   ? Got result: {result}");
+            Log($"   [OK] Got result: {result}");
         }
         catch (TimeoutException)
         {
             sw.Stop();
-            Log($"   ? TimeoutException after {sw.ElapsedMilliseconds}ms!");
-            Log("   ?? Note: The underlying operation is STILL RUNNING.");
-            Log("   ?? WaitAsync stops waiting, but doesn't cancel the task.");
-            Log("   ?? Use CancelAfter when you need to actually STOP the work.\n");
+            Log($"   [TIMEOUT] TimeoutException after {sw.ElapsedMilliseconds}ms!");
+            Log("   [WARN] Note: The underlying operation is STILL RUNNING.");
+            Log("   [i] WaitAsync stops waiting, but doesn't cancel the task.");
+            Log("   [TIP] Use CancelAfter when you need to actually STOP the work.\n");
         }
         finally
         {
@@ -117,7 +117,7 @@ public partial class Step24ViewModel : StepViewModelBase
     }
 
     // ========================================================================
-    // DEMO 3: Combined pattern — CancelAfter + WaitAsync for robustness.
+    // DEMO 3: Combined pattern -- CancelAfter + WaitAsync for robustness.
     // ========================================================================
     [RelayCommand]
     private async Task CombinedDemo()
@@ -125,9 +125,9 @@ public partial class Step24ViewModel : StepViewModelBase
         IsRunning = true;
         Log("--- Combined: CancelAfter + WaitAsync ---\n");
 
-        Log("   ?? Production pattern:");
-        Log("      CancelAfter(2s) ? asks the method to stop cooperatively.");
-        Log("      WaitAsync(3s)   ? safety net if method ignores cancellation.\n");
+        Log("   [i] Production pattern:");
+        Log("      CancelAfter(2s) -> asks the method to stop cooperatively.");
+        Log("      WaitAsync(3s)   -> safety net if method ignores cancellation.\n");
 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(2));
@@ -141,19 +141,19 @@ public partial class Step24ViewModel : StepViewModelBase
             await LongRunningOperationAsync(cts.Token)
                 .WaitAsync(TimeSpan.FromSeconds(3));
 
-            Log("   ? Operation completed.");
+            Log("   [OK] Operation completed.");
         }
         catch (OperationCanceledException)
         {
             sw.Stop();
-            Log($"   ?? Cooperatively cancelled after {sw.ElapsedMilliseconds}ms");
-            Log("   ? CancelAfter worked — the method stopped gracefully.");
+            Log($"   [TIMEOUT] Cooperatively cancelled after {sw.ElapsedMilliseconds}ms");
+            Log("   [OK] CancelAfter worked -- the method stopped gracefully.");
         }
         catch (TimeoutException)
         {
             sw.Stop();
-            Log($"   ? Hard timeout after {sw.ElapsedMilliseconds}ms");
-            Log("   ?? WaitAsync safety net kicked in.");
+            Log($"   [TIMEOUT] Hard timeout after {sw.ElapsedMilliseconds}ms");
+            Log("   [WARN] WaitAsync safety net kicked in.");
         }
 
         Log("");
@@ -161,7 +161,7 @@ public partial class Step24ViewModel : StepViewModelBase
     }
 
     // ========================================================================
-    // DEMO 4: Timeout succeeds — operation finishes in time.
+    // DEMO 4: Timeout succeeds -- operation finishes in time.
     // ========================================================================
     [RelayCommand]
     private async Task SuccessfulTimeout()
@@ -169,8 +169,8 @@ public partial class Step24ViewModel : StepViewModelBase
         IsRunning = true;
         Log("--- Timeout Success: Operation Finishes In Time ---\n");
 
-        Log("   ?? Timeout: 3 seconds");
-        Log("   ? Operation takes only 1 second...\n");
+        Log("   [i] Timeout: 3 seconds");
+        Log("   [>] Operation takes only 1 second...\n");
 
         using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromSeconds(3));
@@ -181,13 +181,13 @@ public partial class Step24ViewModel : StepViewModelBase
         {
             await FastOperationAsync(cts.Token);
             sw.Stop();
-            Log($"   ? Completed in {sw.ElapsedMilliseconds}ms (well within 3s timeout).");
-            Log("   ?? When the operation finishes in time, nothing special happens.");
-            Log("   ?? The CancellationToken simply never triggers.\n");
+            Log($"   [OK] Completed in {sw.ElapsedMilliseconds}ms (well within 3s timeout).");
+            Log("   [i] When the operation finishes in time, nothing special happens.");
+            Log("   [i] The CancellationToken simply never triggers.\n");
         }
         catch (OperationCanceledException)
         {
-            Log("   ?? Cancelled (shouldn't happen here).");
+            Log("   [TIMEOUT] Cancelled (shouldn't happen here).");
         }
         finally
         {
@@ -205,18 +205,18 @@ public partial class Step24ViewModel : StepViewModelBase
         for (int i = 1; i <= 10; i++)
         {
             token.ThrowIfCancellationRequested();
-            Log($"   ?? Step {i}/10...");
+            Log($"   [>] Step {i}/10...");
             await Task.Delay(500, token);
         }
     }
 
     /// <summary>
     /// An operation that does NOT accept a CancellationToken.
-    /// Cannot be cooperatively cancelled — only WaitAsync can help.
+    /// Cannot be cooperatively cancelled -- only WaitAsync can help.
     /// </summary>
     private static async Task<string> NonCancellableOperationAsync()
     {
-        await Task.Delay(4000); // No token — can't be cancelled!
+        await Task.Delay(4000); // No token -- can't be cancelled!
         return "Data from non-cancellable operation";
     }
 

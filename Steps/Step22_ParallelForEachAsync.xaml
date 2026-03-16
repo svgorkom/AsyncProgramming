@@ -26,16 +26,16 @@ WHEN TO USE:
 - You need cancellation support.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Basic: process 10 items (max 3 concurrent)"
+                    Content="[1] Basic: process 10 items (max 3 concurrent)"
                     Command="{Binding BasicDemoCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Compare: sequential vs parallel"
+                    Content="[2] Compare: sequential vs parallel"
                     Command="{Binding CompareDemoCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource ActionButton}"
-                        Content="?? With cancellation (20 items)"
+                        Content="[3] With cancellation (20 items)"
                         Command="{Binding WithCancellationCommand}"
                         IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
                 <Button Style="{StaticResource ActionButton}" Margin="10,5,0,5"

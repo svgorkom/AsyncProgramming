@@ -24,15 +24,15 @@ ChannelReader.ReadAllAsync() returns IAsyncEnumerable. Use await foreach!
 Call writer.Complete() when done producing to signal "no more items."</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Unbounded channel (basic producer/consumer)"
+                    Content="[1] Unbounded channel (basic producer/consumer)"
                     Command="{Binding UnboundedChannelCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Bounded channel (backpressure demo)"
+                    Content="[2] Bounded channel (backpressure demo)"
                     Command="{Binding BoundedChannelCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Multiple consumers (fan-out)"
+                    Content="[3] Multiple consumers (fan-out)"
                     Command="{Binding MultipleConsumersCommand}"
                     IsEnabled="{Binding IsRunning, Converter={StaticResource InvertBoolConverter}}"/>
 

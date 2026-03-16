@@ -23,16 +23,16 @@ RULE: I/O-bound = await directly. CPU-bound = await Task.Run.
 Don't wrap I/O in Task.Run. That wastes a thread to just sit and wait.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="? CPU-bound WITHOUT Task.Run (freezes UI)"
+                    Content="[1] CPU-bound WITHOUT Task.Run (freezes UI)"
                     Command="{Binding CpuBoundBlockingCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="? CPU-bound WITH Task.Run (UI stays responsive)"
+                    Content="[2] CPU-bound WITH Task.Run (UI stays responsive)"
                     Command="{Binding CpuBoundWithTaskRunCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="? I/O-bound: just await (no Task.Run needed)"
+                    Content="[3] I/O-bound: just await (no Task.Run needed)"
                     Command="{Binding IoBoundCorrectCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Mixed workload: CPU + I/O together"
+                    Content="[4] Mixed workload: CPU + I/O together"
                     Command="{Binding MixedWorkloadCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="280"

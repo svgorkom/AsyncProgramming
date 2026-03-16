@@ -28,19 +28,19 @@ This step simulates test runs in the UI. The patterns are directly
 transferable to real xUnit/NUnit/MSTest projects.</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="? Basic async test pattern"
+                    Content="[1] Basic async test pattern"
                     Command="{Binding BasicAsyncTestCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Testing async exceptions"
+                    Content="[2] Testing async exceptions"
                     Command="{Binding ExceptionTestCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Testing cancellation"
+                    Content="[3] Testing cancellation"
                     Command="{Binding CancellationTestCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Testing with timeouts"
+                    Content="[4] Testing with timeouts"
                     Command="{Binding TimeoutTestCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Mocking async dependencies"
+                    Content="[5] Mocking async dependencies"
                     Command="{Binding MockingTestCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="260"

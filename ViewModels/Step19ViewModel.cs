@@ -9,14 +9,14 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. Task.WhenEach — Returns an IAsyncEnumerable<Task<T>> that yields tasks
+// 1. Task.WhenEach -- Returns an IAsyncEnumerable<Task<T>> that yields tasks
 //    in the ORDER THEY COMPLETE (not the order you started them).
 //    Available in .NET 9 and later.
 //
 // 2. THE OLD WAY (WhenAny loop):
 //    - Call Task.WhenAny to get the first completed task.
 //    - Remove it from the list. Repeat until all are done.
-//    - Verbose, error-prone, O(n²) complexity.
+//    - Verbose, error-prone, O(n^2) complexity.
 //
 // 3. THE NEW WAY (WhenEach):
 //    - await foreach (var task in Task.WhenEach(tasks))
@@ -55,7 +55,7 @@ public partial class Step19ViewModel : StepViewModelBase
             FetchDataAsync("Server-C", 1200),  // Medium
         ];
 
-        Log("   ?? All 3 tasks started simultaneously.\n");
+        Log("   [>] All 3 tasks started simultaneously.\n");
 
         int order = 0;
 
@@ -68,8 +68,8 @@ public partial class Step19ViewModel : StepViewModelBase
         }
 
         sw.Stop();
-        Log($"\n   ? All done in {sw.ElapsedMilliseconds}ms total.");
-        Log("   ?? Results appeared in COMPLETION order, not start order!\n");
+        Log($"\n   [OK] All done in {sw.ElapsedMilliseconds}ms total.");
+        Log("   [i] Results appeared in COMPLETION order, not start order!\n");
     }
 
     // ========================================================================
@@ -81,7 +81,7 @@ public partial class Step19ViewModel : StepViewModelBase
         Log("--- WhenAll vs WhenEach: User Experience Comparison ---\n");
 
         // --- WhenAll: user sees nothing until ALL are done ---
-        Log("?? Task.WhenAll — wait for all, then display:");
+        Log("[>] Task.WhenAll -- wait for all, then display:");
         var sw = Stopwatch.StartNew();
 
         Task<string>[] allTasks =
@@ -92,13 +92,13 @@ public partial class Step19ViewModel : StepViewModelBase
         ];
 
         string[] allResults = await Task.WhenAll(allTasks);
-        Log($"   ?? After {sw.ElapsedMilliseconds}ms — ALL results at once:");
-        foreach (string r in allResults) Log($"   • {r}");
+        Log($"   [i] After {sw.ElapsedMilliseconds}ms -- ALL results at once:");
+        foreach (string r in allResults) Log($"   - {r}");
 
         Log("");
 
         // --- WhenEach: user sees results immediately ---
-        Log("? Task.WhenEach — display each as it arrives:");
+        Log("[OK] Task.WhenEach -- display each as it arrives:");
         sw.Restart();
 
         Task<string>[] eachTasks =
@@ -111,12 +111,12 @@ public partial class Step19ViewModel : StepViewModelBase
         await foreach (Task<string> done in Task.WhenEach(eachTasks))
         {
             string result = await done;
-            Log($"   ?? At {sw.ElapsedMilliseconds}ms — {result}");
+            Log($"   [i] At {sw.ElapsedMilliseconds}ms -- {result}");
         }
 
         sw.Stop();
-        Log("\n   ?? WhenEach showed the first result after ~300ms.");
-        Log("   ?? WhenAll showed nothing until ~1500ms. Better UX with WhenEach!\n");
+        Log("\n   [i] WhenEach showed the first result after ~300ms.");
+        Log("   [i] WhenAll showed nothing until ~1500ms. Better UX with WhenEach!\n");
     }
 
     // ========================================================================
@@ -134,7 +134,7 @@ public partial class Step19ViewModel : StepViewModelBase
             FetchDataAsync("Good-Server-2", 1000),
         ];
 
-        Log("   ?? Started 3 tasks (one will fail)...\n");
+        Log("   [>] Started 3 tasks (one will fail)...\n");
 
         int order = 0;
         await foreach (Task<string> completed in Task.WhenEach(tasks))
@@ -143,16 +143,16 @@ public partial class Step19ViewModel : StepViewModelBase
             try
             {
                 string result = await completed;
-                Log($"   ? #{order}: {result}");
+                Log($"   [OK] #{order}: {result}");
             }
             catch (Exception ex)
             {
-                Log($"   ? #{order}: FAILED — {ex.Message}");
+                Log($"   [ERR] #{order}: FAILED -- {ex.Message}");
             }
         }
 
-        Log("\n   ?? Unlike WhenAll (which throws on first error), WhenEach lets");
-        Log("   ?? you handle each task's success/failure individually.\n");
+        Log("\n   [i] Unlike WhenAll (which throws on first error), WhenEach lets");
+        Log("   [i] you handle each task's success/failure individually.\n");
     }
 
     // --- Helper methods ---

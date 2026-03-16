@@ -19,7 +19,7 @@ namespace AsynAwaitExamples.ViewModels;
 // If you run a SLOW operation on the UI thread (like Thread.Sleep, a big loop,
 // a file download, or a database query), the UI thread is BUSY with that work
 // and CANNOT update the screen or respond to user input.
-// The app looks "frozen" — you can't move the window, click buttons, or type.
+// The app looks "frozen" -- you can't move the window, click buttons, or type.
 //
 // WHY THIS MATTERS:
 // -----------------
@@ -53,7 +53,7 @@ public partial class Step01ViewModel : StepViewModelBase
     }
 
     /// <summary>
-    /// THIS IS THE BAD WAY — running slow code directly on the UI thread.
+    /// THIS IS THE BAD WAY -- running slow code directly on the UI thread.
     /// 
     /// Thread.Sleep(3000) tells the current thread to "do nothing for 3 seconds".
     /// Since this runs on the UI thread, the ENTIRE APPLICATION freezes for 3 seconds.
@@ -65,15 +65,15 @@ public partial class Step01ViewModel : StepViewModelBase
     [RelayCommand]
     private void RunBlocking()
     {
-        Log("? Starting a BLOCKING operation on the UI thread...");
-        Log("   (Try to move the window — you can't!)");
+        Log("[!] Starting a BLOCKING operation on the UI thread...");
+        Log("   (Try to move the window -- you can't!)");
 
-        // ?? BAD: This blocks the UI thread for 3 seconds!
+        // BAD: This blocks the UI thread for 3 seconds!
         // The entire application is unresponsive during this time.
         Thread.Sleep(3000);
 
         // This line only runs AFTER the 3-second block is over.
-        Log("? Blocking operation finished. The UI is responsive again.");
+        Log("[OK] Blocking operation finished. The UI is responsive again.");
         Log("   Notice the counter stopped during the freeze!\n");
     }
 }

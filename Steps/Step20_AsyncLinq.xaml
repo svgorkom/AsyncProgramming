@@ -27,16 +27,16 @@ KEY OPERATIONS:
 - ToListAsync: collect all items into a List (breaks lazy evaluation).</TextBlock>
 
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Filter: async Where (even numbers only)"
+                    Content="[1] Filter: async Where (even numbers only)"
                     Command="{Binding FilterDemoCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Transform: async Select (product lookup)"
+                    Content="[2] Transform: async Select (product lookup)"
                     Command="{Binding TransformDemoCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Pipeline: Where ? Select ? Take"
+                    Content="[3] Pipeline: Where -> Select -> Take"
                     Command="{Binding PipelineDemoCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="?? Collect: ToListAsync"
+                    Content="[4] Collect: ToListAsync"
                     Command="{Binding CollectDemoCommand}"/>
 
             <TextBox Style="{StaticResource OutputStyle}" Height="280"

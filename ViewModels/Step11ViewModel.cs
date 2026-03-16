@@ -10,7 +10,7 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. HttpClient — .NET's built-in async HTTP client.
+// 1. HttpClient -- .NET's built-in async HTTP client.
 // 2. Reuse ONE HttpClient instance (avoid socket exhaustion).
 // 3. All HttpClient methods accept CancellationToken.
 //
@@ -22,7 +22,7 @@ namespace AsynAwaitExamples.ViewModels;
 
 public partial class Step11ViewModel : StepViewModelBase
 {
-    // ? One static HttpClient instance, reused for all requests.
+    // One static HttpClient instance, reused for all requests.
     private static readonly HttpClient s_httpClient = new()
     {
         Timeout = TimeSpan.FromSeconds(10)
@@ -38,7 +38,7 @@ public partial class Step11ViewModel : StepViewModelBase
 
         try
         {
-            Log("   ?? Fetching a random fact from a public API...");
+            Log("   [>] Fetching a random fact from a public API...");
 
             var stopwatch = Stopwatch.StartNew();
 
@@ -46,19 +46,19 @@ public partial class Step11ViewModel : StepViewModelBase
                 "https://httpbin.org/get");
 
             stopwatch.Stop();
-            Log($"   ? Response received in {stopwatch.ElapsedMilliseconds}ms!");
-            Log($"   ?? Response (first 300 chars):");
+            Log($"   [OK] Response received in {stopwatch.ElapsedMilliseconds}ms!");
+            Log($"   [i] Response (first 300 chars):");
             Log($"   {json[..Math.Min(300, json.Length)]}");
             Log("");
         }
         catch (HttpRequestException ex)
         {
-            Log($"   ? HTTP Error: {ex.Message}");
-            Log("   ?? Make sure you have an internet connection.\n");
+            Log($"   [ERR] HTTP Error: {ex.Message}");
+            Log("   [TIP] Make sure you have an internet connection.\n");
         }
         catch (TaskCanceledException)
         {
-            Log("   ? Request timed out!\n");
+            Log("   [TIMEOUT] Request timed out!\n");
         }
     }
 
@@ -80,7 +80,7 @@ public partial class Step11ViewModel : StepViewModelBase
         try
         {
             var stopwatch = Stopwatch.StartNew();
-            Log("   ?? Fetching 3 URLs in parallel...");
+            Log("   [>] Fetching 3 URLs in parallel...");
 
             Task<string>[] tasks = urls
                 .Select(url => FetchUrlAsync(url))
@@ -89,19 +89,19 @@ public partial class Step11ViewModel : StepViewModelBase
             string[] results = await Task.WhenAll(tasks);
 
             stopwatch.Stop();
-            Log($"\n   ? All 3 requests completed in {stopwatch.ElapsedMilliseconds}ms total!");
-            Log("   ?? If sequential, it would take ~3+ seconds. Parallel is faster!\n");
+            Log($"\n   [OK] All 3 requests completed in {stopwatch.ElapsedMilliseconds}ms total!");
+            Log("   [TIP] If sequential, it would take ~3+ seconds. Parallel is faster!\n");
 
             for (int i = 0; i < urls.Length; i++)
             {
-                Log($"   ?? {urls[i]}");
-                Log($"      ? {results[i][..Math.Min(100, results[i].Length)]}...\n");
+                Log($"   [URL] {urls[i]}");
+                Log($"      => {results[i][..Math.Min(100, results[i].Length)]}...\n");
             }
         }
         catch (Exception ex)
         {
-            Log($"   ? Error: {ex.Message}");
-            Log("   ?? Make sure you have an internet connection.\n");
+            Log($"   [ERR] Error: {ex.Message}");
+            Log("   [TIP] Make sure you have an internet connection.\n");
         }
     }
 

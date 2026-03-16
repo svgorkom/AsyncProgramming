@@ -8,12 +8,12 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. IAsyncDisposable — The async version of IDisposable.
+// 1. IAsyncDisposable -- The async version of IDisposable.
 //    - Defines: ValueTask DisposeAsync()
 //    - Used when cleanup requires async work (flushing a stream, closing a
 //      database connection, sending a "goodbye" message over network, etc.)
 //
-// 2. "await using" — The async version of "using".
+// 2. "await using" -- The async version of "using".
 //    - Regular:  using var file = new FileStream(...);
 //    - Async:    await using var conn = new AsyncConnection(...);
 //    - At the end of the scope, DisposeAsync() is called automatically.
@@ -32,32 +32,32 @@ namespace AsynAwaitExamples.ViewModels;
 // --------
 // IDisposable = hanging up the phone (instant).
 // IAsyncDisposable = ending a video call (need to flush buffers, send "bye"
-//   packet, wait for acknowledgment — all async operations).
+//   packet, wait for acknowledgment -- all async operations).
 // ============================================================================
 
 public partial class Step18ViewModel : StepViewModelBase
 {
     // ========================================================================
-    // DEMO 1: Basic await using — async resource cleanup.
+    // DEMO 1: Basic await using -- async resource cleanup.
     // ========================================================================
     [RelayCommand]
     private async Task BasicAwaitUsing()
     {
         Log("--- Basic 'await using' ---\n");
 
-        Log("   ?? Opening async resource...");
+        Log("   [>] Opening async resource...");
 
         await using (var connection = new SimulatedAsyncConnection("Database-1"))
         {
-            Log($"   ? Connected to: {connection.Name}");
-            Log("   ?? Doing some work...");
+            Log($"   [OK] Connected to: {connection.Name}");
+            Log("   [>] Doing some work...");
             await connection.ExecuteQueryAsync("SELECT * FROM Users");
-            Log("   ?? Query executed.");
-            Log("   ? Scope is about to end — DisposeAsync() will be called...");
+            Log("   [OK] Query executed.");
+            Log("   [i] Scope is about to end -- DisposeAsync() will be called...");
         }
-        // ? DisposeAsync() is called here automatically!
+        // DisposeAsync() is called here automatically!
 
-        Log("   ? Connection was disposed asynchronously (flushed + disconnected).\n");
+        Log("   [OK] Connection was disposed asynchronously (flushed + disconnected).\n");
     }
 
     // ========================================================================
@@ -72,14 +72,14 @@ public partial class Step18ViewModel : StepViewModelBase
         await using var conn2 = new SimulatedAsyncConnection("Cache-Server");
         await using var conn3 = new SimulatedAsyncConnection("Message-Queue");
 
-        Log($"   ? Opened: {conn1.Name}");
-        Log($"   ? Opened: {conn2.Name}");
-        Log($"   ? Opened: {conn3.Name}");
+        Log($"   [OK] Opened: {conn1.Name}");
+        Log($"   [OK] Opened: {conn2.Name}");
+        Log($"   [OK] Opened: {conn3.Name}");
 
-        Log("   ?? Doing work with all 3 connections...");
+        Log("   [>] Doing work with all 3 connections...");
         await Task.Delay(500);
 
-        Log("   ? Method ending — all 3 will be disposed in reverse order...");
+        Log("   [i] Method ending -- all 3 will be disposed in reverse order...");
         // conn3 disposed first, then conn2, then conn1 (LIFO order).
     }
 
@@ -89,39 +89,39 @@ public partial class Step18ViewModel : StepViewModelBase
     [RelayCommand]
     private async Task WithoutAwaitUsing()
     {
-        Log("--- Without 'await using' (BAD — resource leak risk) ---\n");
+        Log("--- Without 'await using' (BAD -- resource leak risk) ---\n");
 
-        Log("   ? BAD pattern:");
-        Log("   ?????????????????????????????????????????????????????");
-        Log("   ?  var conn = new AsyncConnection();                ?");
-        Log("   ?  await conn.DoWorkAsync();                        ?");
-        Log("   ?  // If DoWorkAsync throws, Dispose is NEVER called!  ?");
-        Log("   ?  await conn.DisposeAsync(); // might not execute  ?");
-        Log("   ?????????????????????????????????????????????????????");
+        Log("   [X] BAD pattern:");
+        Log("   +-------------------------------------------------------+");
+        Log("   |  var conn = new AsyncConnection();                     |");
+        Log("   |  await conn.DoWorkAsync();                             |");
+        Log("   |  // If DoWorkAsync throws, Dispose is NEVER called!   |");
+        Log("   |  await conn.DisposeAsync(); // might not execute      |");
+        Log("   +-------------------------------------------------------+");
         Log("");
-        Log("   ? GOOD pattern:");
-        Log("   ?????????????????????????????????????????????????????");
-        Log("   ?  await using var conn = new AsyncConnection();    ?");
-        Log("   ?  await conn.DoWorkAsync();                        ?");
-        Log("   ?  // DisposeAsync() called automatically, even     ?");
-        Log("   ?  // if DoWorkAsync throws an exception!           ?");
-        Log("   ?????????????????????????????????????????????????????");
+        Log("   [OK] GOOD pattern:");
+        Log("   +-------------------------------------------------------+");
+        Log("   |  await using var conn = new AsyncConnection();         |");
+        Log("   |  await conn.DoWorkAsync();                             |");
+        Log("   |  // DisposeAsync() called automatically, even          |");
+        Log("   |  // if DoWorkAsync throws an exception!                |");
+        Log("   +-------------------------------------------------------+");
         Log("");
 
         // Demonstrate: exception doesn't prevent disposal.
-        Log("   ?? Demonstrating: exception + await using = still disposed:\n");
+        Log("   [>] Demonstrating: exception + await using = still disposed:\n");
 
         try
         {
             await using var conn = new SimulatedAsyncConnection("Test-DB");
-            Log($"   ? Connected to: {conn.Name}");
-            Log("   ?? About to throw an exception...");
+            Log($"   [OK] Connected to: {conn.Name}");
+            Log("   [>] About to throw an exception...");
             throw new InvalidOperationException("Something went wrong!");
         }
         catch (InvalidOperationException ex)
         {
-            Log($"   ?? Caught: {ex.Message}");
-            Log("   ? DisposeAsync() was STILL called! Resource was cleaned up.\n");
+            Log($"   [!] Caught: {ex.Message}");
+            Log("   [OK] DisposeAsync() was STILL called! Resource was cleaned up.\n");
         }
     }
 
@@ -136,7 +136,7 @@ public partial class Step18ViewModel : StepViewModelBase
         Log("   {");
         Log("       private bool _disposed;");
         Log("");
-        Log("       // Async cleanup — preferred path.");
+        Log("       // Async cleanup -- preferred path.");
         Log("       public async ValueTask DisposeAsync()");
         Log("       {");
         Log("           if (_disposed) return;");
@@ -154,7 +154,7 @@ public partial class Step18ViewModel : StepViewModelBase
         Log("       }");
         Log("   }");
         Log("");
-        Log("   ?? Always implement both interfaces for maximum compatibility.\n");
+        Log("   [TIP] Always implement both interfaces for maximum compatibility.\n");
     }
 }
 

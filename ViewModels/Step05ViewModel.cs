@@ -29,33 +29,33 @@ public partial class Step05ViewModel : StepViewModelBase
     {
         var stopwatch = Stopwatch.StartNew();
 
-        Log("?? Starting PARALLEL execution...\n");
+        Log("[>] Starting PARALLEL execution...\n");
 
-        // Start ALL tasks at the same time — no "await" yet!
-        Log("   ?? Starting all 3 tasks at the same time...");
+        // Start ALL tasks at the same time -- no "await" yet!
+        Log("   [>] Starting all 3 tasks at the same time...");
 
         Task<string> profileTask = FetchUserProfileAsync();
         Task<string> ordersTask = FetchOrdersAsync();
         Task<string> recommendationsTask = FetchRecommendationsAsync();
 
-        Log("   ? All tasks are running... waiting for all to finish...");
+        Log("   [i] All tasks are running... waiting for all to finish...");
 
         // Wait for ALL tasks to complete.
         await Task.WhenAll(profileTask, ordersTask, recommendationsTask);
 
-        // Get results — all tasks are done, so .Result won't block.
+        // Get results -- all tasks are done, so .Result won't block.
         string profile = profileTask.Result;
         string orders = ordersTask.Result;
         string recommendations = recommendationsTask.Result;
 
-        Log($"   ? Profile: {profile}");
-        Log($"   ? Orders: {orders}");
-        Log($"   ? Recommendations: {recommendations}");
+        Log($"   [OK] Profile: {profile}");
+        Log($"   [OK] Orders: {orders}");
+        Log($"   [OK] Recommendations: {recommendations}");
 
         stopwatch.Stop();
-        Log($"\n? Total time: {stopwatch.Elapsed.TotalSeconds:F1} seconds");
-        Log("   (The longest task was 2.0s — compare to 4.5s sequential in Step 4!)");
-        Log("   ?? We saved ~2.5 seconds by running tasks in parallel!\n");
+        Log($"\n[DONE] Total time: {stopwatch.Elapsed.TotalSeconds:F1} seconds");
+        Log("   (The longest task was 2.0s -- compare to 4.5s sequential in Step 4!)");
+        Log("   [TIP] We saved ~2.5 seconds by running tasks in parallel!\n");
     }
 
     private static async Task<string> FetchUserProfileAsync()

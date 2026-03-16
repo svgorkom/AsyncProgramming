@@ -9,9 +9,9 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // KEY CONCEPTS:
 // -------------
-// 1. ValueTask<T> — A lightweight alternative to Task<T>.
+// 1. ValueTask<T> -- A lightweight alternative to Task<T>.
 //    - Task<T> always allocates a heap object (even if the result is immediate).
-//    - ValueTask<T> is a struct — when the result is already available, it avoids
+//    - ValueTask<T> is a struct -- when the result is already available, it avoids
 //      the heap allocation entirely.
 //
 // 2. WHEN TO USE ValueTask<T>:
@@ -27,19 +27,19 @@ namespace AsynAwaitExamples.ViewModels;
 //
 // 4. RULES:
 //    - You can await a ValueTask<T> exactly ONCE.
-//    - Do NOT store or reuse a ValueTask<T> — consume it immediately.
+//    - Do NOT store or reuse a ValueTask<T> -- consume it immediately.
 //    - If you need Task behavior, call .AsTask() to convert.
 //
 // ANALOGY:
 // --------
-// Task<T> is like ordering a package online — always involves processing.
-// ValueTask<T> is like checking your mailbox — if the letter is already there,
+// Task<T> is like ordering a package online -- always involves processing.
+// ValueTask<T> is like checking your mailbox -- if the letter is already there,
 // you just grab it (no allocation). If it's not, you wait for delivery.
 // ============================================================================
 
 public partial class Step13ViewModel : StepViewModelBase
 {
-    // Simulated cache — represents a hot-path lookup.
+    // Simulated cache -- represents a hot-path lookup.
     private readonly ConcurrentDictionary<string, string> _cache = new();
 
     // ========================================================================
@@ -55,31 +55,31 @@ public partial class Step13ViewModel : StepViewModelBase
         _cache["user:2"] = "Bob";
         _cache["user:3"] = "Charlie";
 
-        // Scenario A: Using Task<T> — allocates every time.
-        Log("?? Scenario A: Using Task<string> (always allocates)");
+        // Scenario A: Using Task<T> -- allocates every time.
+        Log("[>] Scenario A: Using Task<string> (always allocates)");
         for (int i = 1; i <= 3; i++)
         {
             string result = await GetUserWithTaskAsync($"user:{i}");
-            Log($"   ? Got: {result} (Task<T> allocated on heap)");
+            Log($"   [i] Got: {result} (Task<T> allocated on heap)");
         }
 
         Log("");
 
-        // Scenario B: Using ValueTask<T> — avoids allocation on cache hit.
-        Log("? Scenario B: Using ValueTask<string> (struct — no allocation on cache hit)");
+        // Scenario B: Using ValueTask<T> -- avoids allocation on cache hit.
+        Log("[OK] Scenario B: Using ValueTask<string> (struct -- no allocation on cache hit)");
         for (int i = 1; i <= 3; i++)
         {
             string result = await GetUserWithValueTaskAsync($"user:{i}");
-            Log($"   ? Got: {result} (ValueTask<T> — no heap allocation!)");
+            Log($"   [OK] Got: {result} (ValueTask<T> -- no heap allocation!)");
         }
 
-        Log("\n?? When the result is already available (cache hit), ValueTask<T>");
+        Log("\n[TIP] When the result is already available (cache hit), ValueTask<T>");
         Log("   avoids creating a Task object on the heap. For hot paths with");
         Log("   millions of calls, this saves significant GC pressure.\n");
     }
 
     // ========================================================================
-    // DEMO 2: Cache miss — ValueTask falls back to real async work.
+    // DEMO 2: Cache miss -- ValueTask falls back to real async work.
     // ========================================================================
     [RelayCommand]
     private async Task CacheMiss()
@@ -88,38 +88,38 @@ public partial class Step13ViewModel : StepViewModelBase
 
         _cache.Clear();
 
-        Log("?? Requesting 'user:99' — NOT in cache...");
+        Log("[>] Requesting 'user:99' -- NOT in cache...");
         string result = await GetUserWithValueTaskAsync("user:99");
-        Log($"   ? Got: {result} (had to do async I/O — ValueTask wrapped a Task)");
+        Log($"   [OK] Got: {result} (had to do async I/O -- ValueTask wrapped a Task)");
 
-        Log("\n?? Requesting 'user:99' again — NOW in cache...");
+        Log("\n[>] Requesting 'user:99' again -- NOW in cache...");
         string cached = await GetUserWithValueTaskAsync("user:99");
-        Log($"   ? Got: {cached} (cache hit — no allocation!)");
+        Log($"   [OK] Got: {cached} (cache hit -- no allocation!)");
 
-        Log("\n?? ValueTask<T> shines when most calls hit cache and only a few");
+        Log("\n[TIP] ValueTask<T> shines when most calls hit cache and only a few");
         Log("   require real async work. The common path is allocation-free.\n");
     }
 
     // ========================================================================
-    // DEMO 3: The rules — what you must NOT do with ValueTask<T>.
+    // DEMO 3: The rules -- what you must NOT do with ValueTask<T>.
     // ========================================================================
     [RelayCommand]
     private void ShowRules()
     {
         Log("--- ValueTask<T> Rules ---\n");
 
-        Log("? DO:");
-        Log("   • Await it immediately:  var x = await GetValueTaskAsync();");
-        Log("   • Use it for frequently-synchronous methods (caches, pools).");
-        Log("   • Use it as a return type for interface methods that may be sync.");
+        Log("[OK] DO:");
+        Log("   - Await it immediately:  var x = await GetValueTaskAsync();");
+        Log("   - Use it for frequently-synchronous methods (caches, pools).");
+        Log("   - Use it as a return type for interface methods that may be sync.");
         Log("");
-        Log("? DO NOT:");
-        Log("   • Await it more than once.");
-        Log("   • Store it in a variable and await later (use .AsTask() instead).");
-        Log("   • Use with Task.WhenAll / Task.WhenAny (convert with .AsTask()).");
-        Log("   • Call .Result or .GetAwaiter().GetResult() before it completes.");
+        Log("[X] DO NOT:");
+        Log("   - Await it more than once.");
+        Log("   - Store it in a variable and await later (use .AsTask() instead).");
+        Log("   - Use with Task.WhenAll / Task.WhenAny (convert with .AsTask()).");
+        Log("   - Call .Result or .GetAwaiter().GetResult() before it completes.");
         Log("");
-        Log("?? CONVERSION: If you need Task<T> behavior:");
+        Log("[TIP] CONVERSION: If you need Task<T> behavior:");
         Log("   Task<string> task = myValueTask.AsTask();");
         Log("   // Now you can use Task.WhenAll, store it, await multiple times.\n");
     }
@@ -127,7 +127,7 @@ public partial class Step13ViewModel : StepViewModelBase
     // --- Helper methods ---
 
     /// <summary>
-    /// Task<T> version — always allocates a Task object, even for cached results.
+    /// Task<T> version -- always allocates a Task object, even for cached results.
     /// </summary>
     private async Task<string> GetUserWithTaskAsync(string key)
     {
@@ -145,17 +145,17 @@ public partial class Step13ViewModel : StepViewModelBase
     }
 
     /// <summary>
-    /// ValueTask<T> version — returns synchronously when cached (no allocation).
+    /// ValueTask<T> version -- returns synchronously when cached (no allocation).
     /// </summary>
     private ValueTask<string> GetUserWithValueTaskAsync(string key)
     {
         if (_cache.TryGetValue(key, out string? cached))
         {
-            // ? Synchronous return — no Task allocation at all!
+            // Synchronous return -- no Task allocation at all!
             return new ValueTask<string>(cached);
         }
 
-        // Cache miss — do the real async work.
+        // Cache miss -- do the real async work.
         return new ValueTask<string>(FetchFromDatabaseAsync(key));
     }
 

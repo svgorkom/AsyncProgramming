@@ -29,7 +29,7 @@ or when the method almost always does real async work.</TextBlock>
                     Content="Compare Task&lt;T&gt; vs ValueTask&lt;T&gt; allocations"
                     Command="{Binding CompareAllocationsCommand}"/>
             <Button Style="{StaticResource ActionButton}"
-                    Content="Cache miss ? falls back to async"
+                    Content="Cache miss -- falls back to async"
                     Command="{Binding CacheMissCommand}"/>
             <Button Style="{StaticResource ActionButton}"
                     Content="Show ValueTask rules"
