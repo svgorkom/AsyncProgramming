@@ -3,5 +3,5 @@
     <File Path=".gitignore" />
     <File Path="nuget.config" />
   </Folder>
-  <Project Path="AsynAwaitExamples.csproj" />
+  <Project Path="AsyncProgrammingExamples.csproj" />
 </Solution>
