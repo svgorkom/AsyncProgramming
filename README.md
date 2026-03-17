@@ -108,6 +108,69 @@ AsyncProgramming/
 
 ---
 
+## How XAML Bindings Connect to ViewModels (Source Generators)
+
+If you browse the ViewModels you'll notice they **don't contain any command properties** like `FetchDataCommand`. Yet the XAML files bind to them:
+
+```xml
+<Button Command="{Binding FetchDataCommand}" ... />
+```
+
+So where does `FetchDataCommand` come from? The answer is **source generators** provided by the [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) NuGet package.
+
+### The pattern in three steps
+
+**1. The ViewModel is declared as `partial` and uses attributes**
+
+```csharp
+public partial class Step03ViewModel : StepViewModelBase
+{
+    [RelayCommand]
+    private async Task FetchData()
+    {
+        // ... your async logic ...
+    }
+}
+```
+
+The `[RelayCommand]` attribute tells the source generator: *"create a command property for this method."*
+
+**2. At compile time the generator creates the other half of the `partial` class**
+
+A file like `Step03ViewModel.FetchData.g.cs` is automatically generated containing:
+
+```csharp
+partial class Step03ViewModel
+{
+    private AsyncRelayCommand? fetchDataCommand;
+
+    public IAsyncRelayCommand FetchDataCommand
+        => fetchDataCommand ??= new AsyncRelayCommand(FetchData);
+}
+```
+
+The naming convention is automatic: method **`FetchData`** → property **`FetchDataCommand`** (the word "Command" is appended).
+
+**3. C#'s `partial` keyword merges everything into one class**
+
+The compiler combines your hand-written file and the generated `.g.cs` file into a single class. The XAML `{Binding FetchDataCommand}` resolves to the generated property, which in turn calls your `FetchData()` method.
+
+### Why this matters
+
+Without source generators you would have to write repetitive boilerplate for every command:
+
+```csharp
+private AsyncRelayCommand? fetchDataCommand;
+public IAsyncRelayCommand FetchDataCommand
+    => fetchDataCommand ??= new AsyncRelayCommand(FetchData);
+```
+
+The `[RelayCommand]` attribute eliminates all of that. The same idea applies to **`[ObservableProperty]`**, which generates properties that automatically raise `PropertyChanged` -- this is how `OutputText` in the base ViewModel notifies the UI of updates.
+
+> **Tip:** In Visual Studio you can see the generated files under **Dependencies → Analyzers → CommunityToolkit.Mvvm.SourceGenerators** in the Solution Explorer, or by navigating to the `.g.cs` files in the temp directory.
+
+---
+
 ## Who Is This For?
 
 - **Beginners** who are new to C# or programming and want to understand async/await from scratch.
@@ -116,7 +179,7 @@ AsyncProgramming/
 
 ---
 
-## Key Concepts Explained Simply
+## Key Concepts Explained Similarly
 
 ### What does "async" mean?
 "Asynchronous" means "not happening at the same time." In programming, it means your app can start a slow task and then **continue doing other things** (like responding to clicks) while it waits for that task to finish.
